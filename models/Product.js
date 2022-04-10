@@ -6,7 +6,11 @@ const productSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  price: {
+  actualPrice: {
+    type: Number,
+    required: true,
+  },
+  offeredPrice: {
     type: Number,
     required: true,
   },

@@ -8,6 +8,7 @@ const blogSchema = new mongoose.Schema({
   },
   publishingDate: {
     type: Date,
+    required: true,
   },
   coverImage: {
     type: String,
@@ -19,6 +20,7 @@ const blogSchema = new mongoose.Schema({
   },
   blogData: {
     type: String,
+    required: true,
   },
   slug: {
     type: String,

@@ -10,7 +10,10 @@ const categorySchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  parentType: mongoose.Types.ObjectId,
+  parentType: {
+    type: mongoose.Types.ObjectId,
+    ref: "Category",
+  },
 });
 
 const Category = mongoose.model(categorySchema, "Category");

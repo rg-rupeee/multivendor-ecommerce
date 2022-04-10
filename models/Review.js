@@ -6,7 +6,7 @@ const reviewSchema = new mongoose.Schema({
     required: true,
     ref: "User",
   },
-  productsId: {
+  productId: {
     type: mongoose.Types.ObjectId,
     required: true,
     ref: "Product",
@@ -14,7 +14,7 @@ const reviewSchema = new mongoose.Schema({
   review: {
     type: String,
   },
-  ratings: {
+  rating: {
     type: Number,
     enum: [1, 2, 3, 4, 5],
     required: true,
