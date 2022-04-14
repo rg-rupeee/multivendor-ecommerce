@@ -1,4 +1,8 @@
+const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
+
 const catchAsync = require("../../../utils/catchAsync");
+const AppError = require("../../../utils/appError");
 
 exports.protect = (Model) => {
   return catchAsync(async (req, res, next) => {
@@ -27,8 +31,6 @@ exports.protect = (Model) => {
 
     req.user = {
       id: currentUser._id,
-      phone: currentUser.phone,
-      role: currentUser.role,
     };
     next();
   });
