@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -9,9 +10,8 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-  },
-  phone: {
-    type: Number,
+    required: true,
+    validate: [validator.isEmail, "Please provide a valid email"],
   },
   profile: {
     type: String,
@@ -61,6 +61,6 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
-const User = mongoose.model(userSchema, "User");
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

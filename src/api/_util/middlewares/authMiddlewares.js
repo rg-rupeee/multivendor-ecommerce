@@ -1,4 +1,4 @@
-const catchAsync = require("../../utils/catchAsync");
+const catchAsync = require("../../../utils/catchAsync");
 
 exports.protect = (Model) => {
   return catchAsync(async (req, res, next) => {

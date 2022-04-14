@@ -41,6 +41,6 @@ const OrderSchema = new mongoose.Schema({
   },
 });
 
-const Category = mongoose.model(OrderSchema, "Category");
+const Order = mongoose.model("Order", OrderSchema);
 
-module.exports = Category;
+module.exports = Order;
