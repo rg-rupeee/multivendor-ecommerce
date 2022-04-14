@@ -1,5 +1,5 @@
-const catchAsync = require("../utils/catchAsync");
-const AppError = require("../utils/appError");
+const catchAsync = require("../../utils/catchAsync");
+const AppError = require("../../utils/appError");
 
 exports.requiredFields = (...Fields) => {
   return catchAsync(async (req, res, next) => {

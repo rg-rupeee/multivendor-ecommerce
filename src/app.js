@@ -8,7 +8,7 @@ const hpp = require("hpp");
 const cors = require("cors");
 
 const AppError = require("./utils/appError");
-const globalErrorHandler = require("./controllers/errorController");
+const globalErrorHandler = require("./utils/errorController");
 const apiRouter = require("./api/index");
 
 const app = express();
@@ -22,14 +22,14 @@ app.use(helmet());
 
 // Development logging
 if (process.env.NODE_ENV === "development") {
-	app.use(morgan("dev"));
+  app.use(morgan("dev"));
 }
 
 // Limit requests from same API
 const limiter = rateLimit({
-	max: 100,
-	windowMs: 60 * 60 * 1000,
-	message: "Too many requests from this IP, please try again in an hour!",
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP, please try again in an hour!",
 });
 app.use("/api", limiter);
 
@@ -50,7 +50,7 @@ app.use(hpp());
 app.use("/api", apiRouter);
 
 app.all("*", (req, res, next) => {
-	next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 // Global error handler

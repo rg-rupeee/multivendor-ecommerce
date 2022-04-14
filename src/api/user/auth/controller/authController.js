@@ -6,24 +6,9 @@ const AppError = require("../../../../utils/AppError");
 const User = require("../../../../models/User");
 
 const { createSendToken } = require("../../../_util/token");
+const { emailSignin } = require("../../../_util/auth");
 
-exports.emailSignin = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
-
-  const user = await User.findOne({ email }).select("+password");
-
-  if (!user) {
-    return next(new AppError("User does not exists", 400));
-  }
-
-  console.log({ user, password });
-
-  if (!(await user.correctPassword(password, user.password))) {
-    return next(new AppError("Invalid Password", 401));
-  }
-
-  createSendToken(user, 200, req, res);
-});
+exports.emailSignin = emailSignin(User);
 
 exports.emailSignup = catchAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
