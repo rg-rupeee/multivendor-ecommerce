@@ -30,4 +30,6 @@ router.patch(
   profileController.updateProfile
 );
 
+router.get("/profile", protect(User), profileController.getMyProfile);
+
 module.exports = router;

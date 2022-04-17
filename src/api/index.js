@@ -9,7 +9,7 @@ router.use("/test", (req, res, next) => {
 });
 
 const productRoutes = require("./product/index");
-router.use("/products", productRoutes);
+router.use("/product", productRoutes);
 
 const adminRoutes = require("./admin/index");
 router.use("/admin", adminRoutes);
