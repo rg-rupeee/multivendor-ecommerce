@@ -13,3 +13,12 @@ exports.updateProfile = catchAsync(async (req, res, next) => {
     user,
   });
 });
+
+exports.getMyProfile = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  return res.status(200).json({
+    success: true,
+    user,
+  });
+});

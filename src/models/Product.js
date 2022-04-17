@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  actualPrice: {
+  mrp: {
     type: Number,
     required: true,
   },
