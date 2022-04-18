@@ -5,6 +5,9 @@ const factory = require("../_util/handlerFactory");
 const Product = require("../../models/Product");
 const productController = require("./controller/productController");
 
+const reviewRouter = require("./review/index");
+router.use("/review", reviewRouter);
+
 router.get("/", factory.getAll(Product, "products"));
 
 router.get("/:id", factory.getOne(Product, "product"));
