@@ -1,5 +1,5 @@
 const catchAsync = require("../../../../utils/catchAsync");
-const AppError = require("../../../../utils/AppError");
+const AppError = require("../../../../utils/appError");
 const Wishlist = require("../../../../models/Wishlist");
 
 const _getWishlist = async (userId, populate) => {

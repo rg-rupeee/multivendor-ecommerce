@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 
 const catchAsync = require("../../../../utils/catchAsync");
-const AppError = require("../../../../utils/AppError");
+const AppError = require("../../../../utils/appError");
 const User = require("../../../../models/User");
 
 const { createSendToken } = require("../../../_util/token");
