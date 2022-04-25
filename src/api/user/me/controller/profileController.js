@@ -1,5 +1,4 @@
 const catchAsync = require("../../../../utils/catchAsync");
-const AppError = require("../../../../utils/AppError");
 const User = require("../../../../models/User");
 
 exports.updateProfile = catchAsync(async (req, res, next) => {
