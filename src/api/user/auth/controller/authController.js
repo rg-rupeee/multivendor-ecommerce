@@ -7,6 +7,7 @@ const User = require("../../../../models/User");
 
 const { createSendToken } = require("../../../_util/token");
 const { emailSignin } = require("../../../_util/auth");
+const { sendMailViaTemplate } = require("../../../../utils/email");
 
 exports.emailSignin = emailSignin(User);
 
@@ -29,7 +30,12 @@ exports.emailSignup = catchAsync(async (req, res, next) => {
     password,
   });
 
-  //TODO: send welcome email
+  if (!name) name = "New User";
+  const to = {
+    email,
+    name,
+  };
+  await sendMailViaTemplate(to, 2);
 
   createSendToken(newUser, 201, req, res);
 });
