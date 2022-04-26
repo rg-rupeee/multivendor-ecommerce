@@ -1,9 +1,15 @@
 const catchAsync = require("../../../../utils/catchAsync");
 const Review = require("../../../../models/Review");
+const APIFeatures = require("../../../_util/apiFeatures");
 
 exports.getReviews = catchAsync(async (req, res, next) => {
   const { productId } = req.params;
-  const reviews = await Review.find({ productId });
+
+  const features = new APIFeatures(Review.find({ productId }), req.query)
+    .sort()
+    .paginate();
+
+  const reviews = await features.query;
 
   return res.json({
     status: "success",
