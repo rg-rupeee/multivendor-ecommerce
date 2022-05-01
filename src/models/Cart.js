@@ -18,6 +18,12 @@ const cartSchema = new mongoose.Schema({
         default: 1,
         required: true,
       },
+      isCustom: {
+        type: Boolean,
+        default: false,
+      },
+      customDescription: String,
+      color: String,
     },
   ],
 });
