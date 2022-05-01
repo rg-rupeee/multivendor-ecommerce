@@ -76,23 +76,46 @@ const _updateProductQuantityInCart = async (
   cart,
   productId,
   quantity,
-  userId
+  userId,
+  req
 ) => {
   let updatedCart;
+  const { isCustom, customDescription, color } = req.body;
 
   if (quantity == 0) {
     /* if product quantity is 0 remove item from cart */
     updatedCart = await _removeProductFromCart(cart, productId, userId);
   } else {
     if (!cart.products.some((obj) => obj.productId.equals(productId))) {
-      updatedCart = await Cart.findOneAndUpdate(
-        { userId },
-        { $push: { products: { productId, quantity } } },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
+      if (isCustom) {
+        updatedCart = await Cart.findOneAndUpdate(
+          { userId },
+          {
+            $push: {
+              products: {
+                productId,
+                quantity,
+                isCustom,
+                customDescription,
+                color,
+              },
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+      } else {
+        updatedCart = await Cart.findOneAndUpdate(
+          { userId },
+          { $push: { products: { productId, quantity, color } } },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+      }
     } else {
       updatedCart = await Cart.findOneAndUpdate(
         { userId, "products.productId": productId },
@@ -162,15 +185,12 @@ exports.updateProductQuantityInCart = catchAsync(async (req, res, next) => {
 
   const cart = await _getCart(req.user.id);
 
-  if (quantity < 0) {
-    return next(new AppError("Quantity cannot be less than 0", 400));
-  }
-
   let updatedCart = await _updateProductQuantityInCart(
     cart,
     productId,
     quantity,
-    req.user.id
+    req.user.id,
+    req
   );
 
   return res.json({
