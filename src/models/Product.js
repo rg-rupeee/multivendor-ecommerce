@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    offeredPrice: {
+    retailPrice: {
       type: Number,
       required: true,
     },
@@ -21,6 +21,18 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     description: String,
+    tableData: [
+      {
+        key: {
+          type: String,
+          required: true,
+        },
+        value: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     vendorId: {
       type: mongoose.Types.ObjectId,
       ref: "Vendor",
@@ -30,10 +42,13 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    mainImage: {
-      type: String,
-      required: true,
-    },
+    thumbnail: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    images: [{ type: String, required: true }],
     onSale: {
       type: Boolean,
       default: false,
@@ -51,7 +66,6 @@ const productSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    alternateImages: [String],
     category: {
       type: mongoose.Types.ObjectId,
       ref: "Category",
