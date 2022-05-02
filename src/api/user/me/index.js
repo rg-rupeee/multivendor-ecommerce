@@ -15,9 +15,6 @@ router.patch(
   passwordController.changePassword
 );
 
-// TODO
-// router.post("/forgetPassword");
-
 router.patch(
   "/profile",
   protect(User),
