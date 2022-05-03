@@ -46,3 +46,24 @@ exports.getMultipleProducts = catchAsync(async (req, res, next) => {
     products,
   });
 });
+
+exports.search = catchAsync(async (req, res, next) => {
+  const { searchKey } = req.body;
+
+  const features = new APIFeatures(
+    Product.find({ name: new RegExp(searchKey, "i") }),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const products = await features.query;
+
+  return res.json({
+    status: "success",
+    results: products.length,
+    products,
+  });
+});

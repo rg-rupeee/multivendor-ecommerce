@@ -17,6 +17,8 @@ router.get(
   productController.getMultipleProducts
 );
 
+router.get("/search", requiredFields("searchKey"), productController.search);
+
 router.get("/:id", factory.getOne(Product, "product"));
 
 router.get("/category/:categoryId", productController.getProductsByCategory);
