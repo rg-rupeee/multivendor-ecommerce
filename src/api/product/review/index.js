@@ -11,8 +11,12 @@ router.get("/:productId", reviewController.getReviews);
 router.post(
   "/:productId",
   protect(User),
-  requiredFields("productId", "review"),
+  requiredFields("review", "rating"),
   reviewController.addReview
 );
+
+router.patch("/:reviewId", protect(User), reviewController.updateReview);
+
+router.delete("/:reviewId", protect(User), reviewController.deleteReview);
 
 module.exports = router;
