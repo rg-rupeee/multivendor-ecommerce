@@ -97,7 +97,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
     } else {
       if (orgUser.passwordResetAttempts > 5) {
         await OrgUser.findOneAndUpdate(
-          { _id: user._id },
+          { _id: orgUser._id },
           {
             $unset: { passwordResetOTP: 1 },
           }
@@ -108,9 +108,9 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
         });
       } else {
         await OrgUser.findOneAndUpdate(
-          { _id: user._id },
+          { _id: orgUser._id },
           {
-            passwordResetAttempts: user.passwordResetAttempts + 1,
+            passwordResetAttempts: orgUser.passwordResetAttempts + 1,
           }
         );
         return res.status(400).json({
