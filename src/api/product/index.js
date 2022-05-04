@@ -11,7 +11,7 @@ router.use("/review", reviewRouter);
 
 router.get("/", factory.getAll(Product, "products"));
 
-router.get(
+router.post(
   "/multiple",
   requiredFields("products"),
   productController.getMultipleProducts
