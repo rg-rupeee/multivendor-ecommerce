@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const AppError = require("../utils/appError");
+const category = require("../models/Category")
 
 const productSchema = new mongoose.Schema(
   {
@@ -92,6 +94,51 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+productSchema.methods.validateData =async function(data,next){
+  // const data = req.body;
+  // data.vendorId = req.user.id;
+  // const product = new Product(data);
+  // req.body = data
+  var hex_re = /^#([0-9a-f]{3}){1,2}$/i;
+
+  if(data.retailPrice > data.mrp){
+    next(new AppError("Retail Price cannot be more than MRP",400));
+  }
+
+  if(!data.vendorId){
+     next(new AppError("Vendor Id cannot be null",400));
+  }
+
+  // quantity shoudl be more than 1
+  if(parseInt(data.quantityInStock) < 1){
+    next(new AppError("Quantity of the product cannot be less than 1",400));
+  }
+
+  for(i in data.images){
+    if(data.images[i].length<1){
+      next(new AppError("Invalide image size",400));
+    }
+  }
+ 
+  // checking the variable colors are hex format or not 
+  for(i in data.variableColors){
+    if(!hex_re.test(data.variableColors[i])){
+      next(new AppError("variable data should be in hexadecimal format",400));
+    }
+  }
+  
+  // check for category existence
+  const requestedCategory = await category.findById(data.category);
+  if(!requestedCategory){
+    next(new AppError("Requested Category do not exists",400))
+  } 
+  //   relatedProducts: [
+  //     {
+  //       type: mongoose.Types.ObjectId,
+  //       ref: "Product",
+  //     },
+  //   ],
+}
 const Product = mongoose.model("Product", productSchema);
 
 module.exports = Product;

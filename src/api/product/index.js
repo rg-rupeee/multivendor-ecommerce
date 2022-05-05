@@ -24,6 +24,6 @@ router.get("/:id", factory.getOne(Product, "product"));
 router.get("/category/:categoryId", productController.getProductsByCategory);
 
 // TO be removed
-router.post("/", factory.createOne(Product, "product"));
+// router.post("/", factory.createOne(Product, "product"));
 
 module.exports = router;
