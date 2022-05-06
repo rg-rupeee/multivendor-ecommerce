@@ -1,26 +1,31 @@
 const mongoose = require("mongoose");
 const Product = require("./Product");
 
-const reviewSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Types.ObjectId,
-    required: true,
-    ref: "User",
+const reviewSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    productId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "Product",
+    },
+    review: {
+      type: String,
+    },
+    rating: {
+      type: Number,
+      enum: [1, 2, 3, 4, 5],
+      required: true,
+    },
   },
-  productId: {
-    type: mongoose.Types.ObjectId,
-    required: true,
-    ref: "Product",
-  },
-  review: {
-    type: String,
-  },
-  rating: {
-    type: Number,
-    enum: [1, 2, 3, 4, 5],
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 reviewSchema.statics.calcAverageRatings = async function (productId) {
   const stats = await this.aggregate([
@@ -58,7 +63,6 @@ reviewSchema.post("save", function () {
 // findByIdAndUpdate
 // findByIdAndDelete
 reviewSchema.pre(/^findOneAnd/, async function (next) {
-  console.log("--------hererrrrrrrrrrrrrr");
   this.r = await this.clone().findOne();
 
   next();

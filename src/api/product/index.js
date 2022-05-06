@@ -17,7 +17,7 @@ router.post(
   productController.getMultipleProducts
 );
 
-router.get("/search", requiredFields("searchKey"), productController.search);
+router.post("/search", requiredFields("searchKey"), productController.search);
 
 router.get("/:id", factory.getOne(Product, "product"));
 
