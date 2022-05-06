@@ -46,7 +46,7 @@ const _getCart = async (userId, populate) => {
   if (populate == "true") {
     cart = await Cart.findOne({ userId }).populate(
       "products.productId",
-      "_id name mrp offeredPrice quantityInStock"
+      "_id name mrp offeredPrice quantityInStock retailPrice images thumbnail"
     );
   } else {
     cart = await Cart.findOne({ userId });
