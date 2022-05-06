@@ -6,8 +6,10 @@ const Product = require("../../models/Product");
 const productController = require("./controller/productController");
 
 const reviewRouter = require("./review/index");
+const vendorRouter = require("./vendor/index")
 const { requiredFields } = require("../_util/check");
 router.use("/review", reviewRouter);
+router.use("/vendor",vendorRouter);
 
 router.get("/", factory.getAll(Product, "products"));
 
