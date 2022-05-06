@@ -1,6 +1,7 @@
 const catchAsync = require("../../utils/catchAsync");
 const AppError = require("../../utils/appError");
 const { createSendToken } = require("./token");
+const { sendMailViaTemplate, sendMail } = require("../../utils/email");
 
 exports.emailSignin = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -28,37 +29,17 @@ exports.emailSignin = (Model) =>
     createSendToken(user, 200, req, res);
   });
 
-exports.emailSignup = (Model, entity, requiredFields, mailTemplateId) => {
+exports.emailSignup = (Model, mailTemplateId) =>
   catchAsync(async (req, res, next) => {
     const { name, email, password } = req.body;
-
-    if (!email) {
-      return next(new AppError("Please provide email"));
-    }
-    if (!password) {
-      return next(new AppError("Please provide password"));
-    }
-
-    if (!validator.isEmail(email)) {
-      return next(new AppError("Please provide a valid email", 400));
-    }
 
     const user = await Model.findOne({ email });
 
     if (user) {
-      return next(new AppError(`${entity} already exists`, 400));
+      return next(new AppError(`user already exists`, 400));
     }
 
-    const userObj = {};
-    for (const field of requiredFields) {
-      if (req.body.field) {
-        userObj[field] = req.body.fields;
-      } else {
-        return next(new AppError(`Please provide ${field}`));
-      }
-    }
-
-    const newUser = await Model.create(userObj);
+    const newUser = await Model.create({ name, email, password });
 
     const to = {
       email,
@@ -68,18 +49,15 @@ exports.emailSignup = (Model, entity, requiredFields, mailTemplateId) => {
 
     createSendToken(newUser, 201, req, res);
   });
-};
 
-exports.forgetPassword = (Model, entity) => {
+exports.forgetPassword = (Model) =>
   catchAsync(async (req, res, next) => {
     const { email } = req.body;
 
     const user = await Model.findOne({ email });
 
     if (!user) {
-      return next(
-        new AppError(`No ${entity} exists with email: ${email}`, 400)
-      );
+      return next(new AppError(`No user exists with email: ${email}`, 400));
     }
 
     const otp = Math.floor(1000 + Math.random() * 9000);
@@ -106,20 +84,33 @@ exports.forgetPassword = (Model, entity) => {
       message: "OTP sent on mail",
     });
   });
-};
 
-exports.resetPassword = (Model) => {
+exports.resetPassword = (Model) =>
   catchAsync(async (req, res, next) => {
     const { email, password, otp } = req.body;
 
     const user = await Model.findOne({ email });
 
+    console.log(user);
+
     if (!user) {
       return next(new AppError(`No user exists with email: ${email}`, 400));
     }
 
-    if (user.passwordResetOTP == otp) {
-      if (user.passwordResetExpires < Date.now()) {
+    const userPasswordResetOTP = user.passwordResetOTP
+      ? user.passwordResetOTP
+      : 0;
+
+    const userPaswordResetExpires = user.passwordResetExpires
+      ? user.passwordResetExpires
+      : 0;
+
+    const userPassswordResetAttempts = user.passwordResetAttempts
+      ? user.passwordResetAttempts
+      : 0;
+
+    if (userPasswordResetOTP == otp) {
+      if (userPaswordResetExpires < Date.now()) {
         return res.status(401).json({
           status: "fail",
           message: "OTP expired",
@@ -130,7 +121,7 @@ exports.resetPassword = (Model) => {
       user.passwordResetOTP = undefined;
       await user.save();
     } else {
-      if (user.passwordResetAttempts > 5) {
+      if (userPassswordResetAttempts > 5) {
         await Model.findOneAndUpdate(
           { _id: user._id },
           {
@@ -145,7 +136,7 @@ exports.resetPassword = (Model) => {
         await Model.findOneAndUpdate(
           { _id: user._id },
           {
-            passwordResetAttempts: user.passwordResetAttempts + 1,
+            passwordResetAttempts: userPassswordResetAttempts + 1,
           }
         );
         return res.status(400).json({
@@ -157,7 +148,6 @@ exports.resetPassword = (Model) => {
 
     createSendToken(user, 200, req, res);
   });
-};
 
 exports.changePassword = (Model) =>
   catchAsync(async (req, res, next) => {
