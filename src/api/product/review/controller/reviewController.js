@@ -5,10 +5,21 @@ const AppError = require("../../../../utils/appError");
 
 exports.getReviews = catchAsync(async (req, res, next) => {
   const { productId } = req.params;
+  const { populate } = req.query;
 
-  const features = new APIFeatures(Review.find({ productId }), req.query)
-    .sort()
-    .paginate();
+  let features;
+  if (!populate) {
+    features = new APIFeatures(Review.find({ productId }), req.query)
+      .sort()
+      .paginate();
+  } else {
+    features = new APIFeatures(
+      Review.find({ productId }).populate("userId", "name email"),
+      req.query
+    )
+      .sort()
+      .paginate();
+  }
 
   const reviews = await features.query;
 
