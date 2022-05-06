@@ -23,6 +23,9 @@ router.use("/category", categoryRoutes);
 const orderRoutes = require("./order/index");
 router.use("/order", orderRoutes);
 
+const couponRoutes = require("./coupon/index");
+router.use("/coupon",couponRoutes);
+
 const payoutRoutes = require("./payout/index");
 router.use("/payout", payoutRoutes);
 
