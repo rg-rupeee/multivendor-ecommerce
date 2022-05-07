@@ -14,12 +14,14 @@ router.get(
     protect(OrgUser),
     factory.getAll(Vendor,"vendor")
 );
+
 // GET - get by id < A>
 router.get(
     "/:id",
     protect(OrgUser),
     factory.getOne(Vendor,"vendor")
 );
+
 // DELETE - delete < A>
 router.delete(
     "/:id",
