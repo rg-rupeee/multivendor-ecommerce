@@ -15,6 +15,8 @@ const validateCart = async (userId) => {
   let needsUpdate = false;
   const updatedProducts = [];
   for (const product of cart.products) {
+    // TODO (BUG): check if product id is null then remove that product from cart
+
     if (product.quantity > product.productId.quantityInStock) {
       needsUpdate = true;
       updatedProducts.push({
