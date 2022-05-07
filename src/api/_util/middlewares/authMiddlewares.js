@@ -22,23 +22,22 @@ exports.protect = (...models) => {
 
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-    for(var i =0; i<models.length; i++){
+    for (var i = 0; i < models.length; i++) {
       let model = models[i];
       const currentUser = await model.findById(decoded.id);
       console.log(currentUser);
-      console.log(currentUser != null)
-      if(currentUser != null){
+      console.log(currentUser != null);
+      if (currentUser != null) {
         req.user = {
           id: currentUser._id,
         };
         return next();
       }
     }
-    
-      return next(
-        new AppError("User belonging to this token does not exists", 401)
-      );
-    
+
+    return next(
+      new AppError("User belonging to this token does not exists", 401)
+    );
   });
 };
 
