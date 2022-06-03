@@ -15,24 +15,29 @@ const validateCart = async (userId) => {
   let needsUpdate = false;
   const updatedProducts = [];
   for (const product of cart.products) {
-    // TODO (BUG): check if product id is null then remove that product from cart
-
-    if (product.quantity > product.productId.quantityInStock) {
-      needsUpdate = true;
-      updatedProducts.push({
-        productId: product.productId._id,
-        quantity: product.productId.quantityInStock,
-      });
+    console.log(product);
+    // check if product id is null
+    if (product.productId) {
+      console.log("inside");
+      if (product.quantity > product.productId.quantityInStock) {
+        needsUpdate = true;
+        updatedProducts.push({
+          productId: product.productId._id,
+          quantity: product.productId.quantityInStock,
+        });
+      } else {
+        updatedProducts.push({
+          productId: product.productId._id,
+          quantity: product.quantity,
+        });
+      }
     } else {
-      updatedProducts.push({
-        productId: product.productId._id,
-        quantity: product.quantity,
-      });
+      needsUpdate = true;
     }
   }
 
   if (needsUpdate) {
-    await Cart.findOneAndUpdate(
+    updated = await Cart.findOneAndUpdate(
       { userId },
       { products: updatedProducts },
       { runValidators: true }
@@ -198,5 +203,28 @@ exports.updateProductQuantityInCart = catchAsync(async (req, res, next) => {
   return res.json({
     status: "success",
     cart: updatedCart,
+  });
+});
+
+exports.updateCart = catchAsync(async (req, res, next) => {
+  const { products } = req.body;
+
+  const cart = await _getCart(req.user.id);
+
+  await Cart.findOneAndUpdate(
+    { _id: cart._id },
+    { products },
+    {
+      runValidators: true,
+    }
+  );
+
+  await validateCart(req.user.id);
+
+  const updateCart = await Cart.findOne({ userId: req.user.id });
+
+  return res.status(200).json({
+    success: true,
+    cart: updateCart,
   });
 });
