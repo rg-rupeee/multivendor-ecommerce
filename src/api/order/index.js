@@ -24,9 +24,16 @@ router.get("/user/:orderId", protect(User), userOrderController.getOrder);
 // get vendor's all orders
 router.get("/vendor", protect(Vendor), venddorOrderController.getMyOrders);
 
+// get vendor order
+router.get(
+  "/vendor/:orderId",
+  protect(Vendor),
+  venddorOrderController.getOrder
+);
+
 // update vendor's order status
 router.patch(
-  "/vendor/:orderId/status",
+  "/vendor/:orderId",
   protect(Vendor),
   requiredFields("orderStatus"),
   venddorOrderController.updateOrderStatus

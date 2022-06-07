@@ -2,6 +2,7 @@ const Order = require("../../../models/Order");
 const VendorOrder = require("../../../models/VendorOrder");
 const catchAsync = require("../../../utils/catchAsync");
 const APIFeatures = require("../../_util/apiFeatures");
+const AppError = require("../../../utils/appError");
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(
@@ -24,15 +25,13 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 exports.getOrder = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
 
-  const vendorOrder = await VendorOrder.findById({ _id: orderId }).populate(
-    "vendorOrders"
-  );
+  const vendorOrder = await VendorOrder.findById({ _id: orderId });
 
   if (!vendorOrder) {
     return next(new AppError("No vendor order found with that id", 404));
   }
 
-  if (!vendorOrder.userId.equals(req.user.id)) {
+  if (!vendorOrder.vendorId.equals(req.user.id)) {
     return next(new AppError("Forbidden! can access on the user's order", 403));
   }
 
@@ -45,15 +44,13 @@ exports.getOrder = catchAsync(async (req, res, next) => {
 exports.updateOrderStatus = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
 
-  const vendorOrder = await VendorOrder.findById({ _id: orderId }).populate(
-    "vendorOrders"
-  );
+  const vendorOrder = await VendorOrder.findById({ _id: orderId });
 
   if (!vendorOrder) {
     return next(new AppError("No vendor order found with that id", 404));
   }
 
-  if (!vendorOrder.userId.equals(req.user.id)) {
+  if (!vendorOrder.vendorId.equals(req.user.id)) {
     return next(new AppError("Forbidden! can access on the user's order", 403));
   }
 
@@ -70,6 +67,6 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
 
   return res.json({
     success: true,
-    order: vendorOrder,
+    order: updatedVendorOrder,
   });
 });
