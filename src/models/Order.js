@@ -16,6 +16,7 @@ const OrderSchema = new mongoose.Schema({
   ],
   vendorOrdersTotal: {
     type: Number,
+    default: 0,
     required: true,
   },
   coupon: {
@@ -29,6 +30,7 @@ const OrderSchema = new mongoose.Schema({
   },
   finalAmount: {
     type: Number,
+    default: 0,
     required: true,
   },
   paymentStage: {
@@ -39,15 +41,18 @@ const OrderSchema = new mongoose.Schema({
   },
   orderStatus: {
     type: String,
-    enum: ["Placed", "Completed"],
-    default: "Placed",
+    enum: ["Placed", "Completed", "Initiated"],
+    default: "Initiated",
     required: true,
   },
 });
 
 OrderSchema.pre("save", async function (next) {
-  const total = 0;
-  for (const order of this.VendorOrder) {
+  let total = 0;
+  console.log("...");
+  console.log(this);
+
+  for (const order of this.vendorOrders) {
     const vendorOrder = await VendorOrder.findOne({ _id: order });
     total = total + vendorOrder.total;
   }

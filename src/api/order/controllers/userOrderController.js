@@ -41,12 +41,10 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
 
   // seperate all products according to vendor
   const products = cart.products;
-  const vendorSet = new Set();
   const vendors = {};
   for (const product of products) {
     const vendorId = product.productId.vendorId;
     const productId = product.productId._id;
-    console.log({ productId, vendorId });
     const price = product.productId.retailPrice;
 
     if (!vendors[vendorId]) {
@@ -59,16 +57,43 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
     vendors[vendorId].products.push({
       productId,
       price,
+      quantity: product.quantity,
+      isCustom: product.isCustom,
+      customDescription: product.customDescription,
+      color: product.color,
     });
 
     console.log(vendors[vendorId]);
   }
 
-  // 4. create vendor order
-  // 5 create user order on basis of vendor order
+  // validate vendor and create vendor order
+  const vendorIds = Object.keys(vendors);
+  const vendorOrders = [];
+  const vendorOrderDetails = [];
+  for (const id of vendorIds) {
+    // console.log(vendors[id]);
+    const vendorOrder = await VendorOrder.create({
+      userId: req.user.id,
+      vendorId: id,
+      products: vendors[id].products,
+    });
+
+    vendorOrders.push(vendorOrder._id);
+    vendorOrderDetails.push(vendorOrder);
+
+    console.log(vendorOrder);
+  }
+
+  // create user order on basis of vendor order
+  const order = await Order.create({
+    userId: req.user.id,
+    vendorOrders,
+  });
+
   return res.json({
-    message: "hello",
-    vendors,
+    success: true,
+    order,
+    vendorOrders: vendorOrderDetails,
   });
 });
 

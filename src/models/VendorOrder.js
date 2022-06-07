@@ -18,11 +18,21 @@ const vendorOrderSchema = new mongoose.Schema({
         ref: "Product",
       },
       price: { type: Number, min: 0 },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+      isCustom: {
+        type: Boolean,
+        default: false,
+      },
+      customDescription: String,
+      color: String,
     },
   ],
   total: {
     type: Number,
-    required: true,
+    default: 0,
     min: 0,
   },
   orderStatus: {
@@ -33,8 +43,8 @@ const vendorOrderSchema = new mongoose.Schema({
   },
 });
 
-vendorOrderSchema.pre("save", async function (next) {
-  const total = 0;
+vendorOrderSchema.pre("save", function (next) {
+  let total = 0;
   for (const product of this.products) {
     total = total + product.price;
   }
