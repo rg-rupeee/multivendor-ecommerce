@@ -8,8 +8,29 @@ const factory = require("../../_util/handlerFactory")
 
 router.patch(
     "/:id",
-    protect(Vendor,OrgUser),
+    protect(OrgUser),
     restrictedFields("password"),
     factory.updateOne(Vendor,"vendor")
 )
+
+router.get(
+    "/:id",
+    protect(Vendor,OrgUser),
+    factory.getOne(Vendor,"vendor")
+)
+
+router.patch(
+    "/me",
+    protect(Vendor,"vendor"),
+    restrictedFields("password"),
+    factory.updateOne(Vendor,"vendor")
+)
+
+router.get(
+    "/me",
+    protect(Vendor),
+    factory.getOne(Vendor,"vendor")
+)
+
+
 module.exports = router;
