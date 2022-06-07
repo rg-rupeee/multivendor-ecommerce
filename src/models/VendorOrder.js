@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Vendor = require("./Vendor");
+const { sendMail } = require("./../utils/email");
 
 const vendorOrderSchema = new mongoose.Schema({
   userId: {
@@ -51,6 +53,21 @@ vendorOrderSchema.pre("save", function (next) {
   this.total = total;
 
   next();
+});
+
+vendorOrderSchema.post("save", async function () {
+  // TODO: send mail to each vendor regarding the order
+  console.log(this);
+
+  const vendor = await Vendor.findOne({ _id: this.vendorId });
+
+  if (!vendor) return;
+
+  await sendMail(
+    { email: vendor.email, name: vendor.name },
+    "ORDER RECEIVED",
+    `You have an order with order id ${this._id}! please check dashboard.`
+  );
 });
 
 const VendorOrder = mongoose.model("VendorOrder", vendorOrderSchema);
