@@ -33,7 +33,7 @@ const vendorOrderSchema = new mongoose.Schema({
   },
 });
 
-VendorOrderSchema.pre("save", async function (next) {
+vendorOrderSchema.pre("save", async function (next) {
   const total = 0;
   for (const product of this.products) {
     total = total + product.price;

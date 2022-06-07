@@ -15,10 +15,9 @@ const validateCart = async (userId) => {
   let needsUpdate = false;
   const updatedProducts = [];
   for (const product of cart.products) {
-    console.log(product);
+    // console.log(product);
     // check if product id is null
     if (product.productId) {
-      console.log("inside");
       if (product.quantity > product.productId.quantityInStock) {
         needsUpdate = true;
         updatedProducts.push({
@@ -44,6 +43,8 @@ const validateCart = async (userId) => {
     );
   }
 };
+
+exports.ValidateCart = validateCart;
 
 const _getCart = async (userId, populate) => {
   let cart;

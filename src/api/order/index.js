@@ -7,21 +7,30 @@ const factory = require("../_util/handlerFactory");
 const Order = require("../../models/Order");
 const User = require("../../models/User");
 const Vendor = require("../../models/Vendor");
+const { requiredFields } = require("../_util/check");
+
+const userOrderController = require("./controllers/userOrderController");
+const venddorOrderController = require("./controllers/vendorOrderController");
 
 // get user's all orders
-router.get("/user", protect(User));
+router.get("/user", protect(User), userOrderController.getMyOrders);
 
 // create order
-router.post("/user", protect(User));
+router.post("/user", protect(User), userOrderController.createOrderFromCart);
 
 // get order
-router.get("/user/:orderId", protect(User));
+router.get("/user/:orderId", protect(User), userOrderController.getOrder);
 
 // get vendor's all orders
-router.get("/vendor", protect(Vendor));
+router.get("/vendor", protect(Vendor), venddorOrderController.getMyOrders);
 
 // update vendor's order status
-router.patch("/vendor/:orderId/status", protect(Vendor));
+router.patch(
+  "/vendor/:orderId/status",
+  protect(Vendor),
+  requiredFields("orderStatus"),
+  venddorOrderController.updateOrderStatus
+);
 
 // get all orders
 router.get("/admin", protect(OrgUser), factory.getAll(Order, "order"));
