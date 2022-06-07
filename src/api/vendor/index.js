@@ -5,8 +5,13 @@ const router = express.Router();
 const factory = require("../_util/handlerFactory");
 
 const authRouter = require("./auth/index");
+const profileRouter = require("./profile/index")
 const Vendor = require("../../models/Vendor");
+
 router.use("/auth", authRouter);
+
+//profile routes
+router.use("/profile",profileRouter);
 
 // GET - get all <A>
 router.get("/", protect(OrgUser), factory.getAll(Vendor, "vendor"));
