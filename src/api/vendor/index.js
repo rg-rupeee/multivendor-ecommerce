@@ -13,6 +13,9 @@ router.use("/auth", authRouter);
 //profile routes
 router.use("/profile",profileRouter);
 
+const meRoute = require("./me")
+router.use("/me",meRoute);
+
 // GET - get all <A>
 router.get("/", protect(OrgUser), factory.getAll(Vendor, "vendor"));
 
