@@ -21,6 +21,14 @@ router.post("/user", protect(User), userOrderController.createOrderFromCart);
 // get order
 router.get("/user/:orderId", protect(User), userOrderController.getOrder);
 
+// apply coupon
+router.post(
+  "/user/:orderId",
+  protect(User),
+  requiredFields("couponCode"),
+  userOrderController.applyCoupon
+);
+
 // get vendor's all orders
 router.get("/vendor", protect(Vendor), venddorOrderController.getMyOrders);
 

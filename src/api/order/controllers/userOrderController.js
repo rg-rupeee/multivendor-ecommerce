@@ -1,5 +1,6 @@
 const Order = require("../../../models/Order");
 const VendorOrder = require("../../../models/VendorOrder");
+const Coupon = require("../../../models/Coupon");
 const Cart = require("../../../models/Cart");
 const catchAsync = require("../../../utils/catchAsync");
 const AppError = require("../../../utils/appError");
@@ -113,5 +114,44 @@ exports.getOrder = catchAsync(async (req, res, next) => {
   return res.json({
     success: true,
     order,
+  });
+});
+
+exports.applyCoupon = catchAsync(async (req, res, next) => {
+  const { orderId } = req.params;
+  const { couponCode } = req.body;
+
+  const order = await Order.findById({ _id: orderId }).populate("vendorOrders");
+
+  if (!order) {
+    return next(new AppError("No order found with that id", 404));
+  }
+
+  if (!order.userId.equals(req.user.id)) {
+    return next(new AppError("Forbidden! can access on the user's order", 403));
+  }
+
+  const coupon = await Coupon.findOne({ code: couponCode });
+
+  if (!coupon) {
+    return next(new AppError("No coupon found", 404));
+  }
+
+  if (Coupon.isValid(coupon, order.vendorOrdersTotal)) {
+    order.couponCode = couponCode;
+    order.coupon = coupon;
+    order.couponDiscount = Coupon.calcualteDiscount(
+      coupon,
+      order.vendorOrdersTotal
+    );
+  }
+
+  const updated = await order.save();
+
+  return res.json({
+    success: true,
+    discountAmount: order.couponDiscount,
+    discountCode: order.couponCode,
+    order: updated,
   });
 });
