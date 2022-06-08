@@ -9,6 +9,7 @@ const profileController = require('../profile/controller/profileController');
 
 router.patch(
     "/profile",
+    restrictedFields("isVerified"),
     protect(Vendor),
     profileController.updateProfile
 )
