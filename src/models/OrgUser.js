@@ -15,7 +15,8 @@ const orgUserSchema = new mongoose.Schema({
   },
   role : {
     type : [String],
-    default : ["Vendor","User","Product"],
+    enum : ["Vendor","User","Product","Blog","Admin","Newsletter","Payout","Order","Coupon","Category",""],
+    default : ["Vendor"],
     required : true
   },
   profile: {
