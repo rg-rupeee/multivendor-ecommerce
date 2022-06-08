@@ -4,7 +4,8 @@ const Vendor = require('../../../models/Vendor');
 const { restrictedFields } = require('../../_util/check');
 const { protect } = require('../../_util/middlewares/authMiddlewares');
 const router = express.Router();
-const factory = require("../../_util/handlerFactory")
+const factory = require("../../_util/handlerFactory");
+const profileController = require('../../user/me/controller/profileController');
 
 router.patch(
     "/:id",
@@ -22,14 +23,13 @@ router.get(
 router.patch(
     "/me",
     protect(Vendor,"vendor"),
-    restrictedFields("password"),
-    factory.updateOne(Vendor,"vendor")
+    profileController.updateProfile
 )
 
 router.get(
     "/me",
     protect(Vendor),
-    factory.getOne(Vendor,"vendor")
+    profileController.getMyProfile
 )
 
 
