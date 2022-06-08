@@ -1,17 +1,21 @@
 const express = require("express");
 const NewsLetter = require("../../models/NewsLetter");
+const User = require("../../models/User");
 const router = express.Router();
-const factory = require("../_util/handlerFactory")
+const factory = require("../_util/handlerFactory");
+const { protect } = require("../_util/middlewares/authMiddlewares");
 const newsletterController = require("./controller/newsletterController")
 
 router.post(
     "/subscribe",
-    factory.createOne(NewsLetter,"newsletter")
+    protect(User),
+    newsletterController.subscribe
 );
 
 router.delete(
     "/unsubscribe",
-    factory.deleteOne(NewsLetter,"newsletter")
+    protect(User),
+    newsletterController.unsubscribe
 );
 
 router.post(
