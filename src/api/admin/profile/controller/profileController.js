@@ -26,7 +26,7 @@ exports.getMyProfile = catchAsync(async (req, res, next) => {
 exports.creatAdminProfile = catchAsync(async (req, res, next) => {
     const orgUser = await OrgUser.findById(req.user.id);
 
-    const isAdmin = false; 
+    let isAdmin = false; 
     orgUser.role.forEach(element => {
         if(element == "Admin") 
         isAdmin = true;
@@ -35,6 +35,11 @@ exports.creatAdminProfile = catchAsync(async (req, res, next) => {
     if(!isAdmin){
         return next(new AppError("Unauthorized Access",401));
     }
+
+    const tempOrgUser = await OrgUser.findOne({email : req.body.email});
+    
+    if(tempOrgUser != null)
+    return next(new AppError("User with this email already exits",409));
 
     const neworgUser = new OrgUser(req.body);
     neworgUser.save();
