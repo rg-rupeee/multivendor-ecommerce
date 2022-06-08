@@ -23,6 +23,9 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "Coupon",
   },
+  couponCode: {
+    type: String,
+  },
   couponDiscount: {
     type: Number,
     default: 0,
