@@ -13,6 +13,11 @@ const vendorSchema = new mongoose.Schema({
     required: true,
     validate: [validator.isEmail, "Please provide a valid email"],
   },
+  isVerified : {
+    type : Boolean,
+    require : true,
+    default : false
+  },
   profile: {
     type: String,
   },

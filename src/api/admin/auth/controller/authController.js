@@ -7,15 +7,12 @@ const OrgUser = require("../../../../models/OrgUser");
 
 const {
   emailSignin,
-  emailSignup,
   forgetPassword,
   resetPassword,
 } = require("../../../_util/auth");
 const { sendMail, sendMailViaTemplate } = require("../../../../utils/email");
 
 exports.emailSignin = emailSignin(OrgUser);
-
-exports.emailSignup = emailSignup(OrgUser, 2);
 
 exports.forgetPassword = forgetPassword(OrgUser, "orgUser");
 
