@@ -24,7 +24,7 @@ exports.protect = (...models) => {
 
     for (var i = 0; i < models.length; i++) {
       let model = models[i];
-      const currentUser = await model.findById(decoded.id);
+      let currentUser = await model.findById(decoded.id);
       console.log(currentUser);
       console.log(currentUser != null);
       if (currentUser != null) {
