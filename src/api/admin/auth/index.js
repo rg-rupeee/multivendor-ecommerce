@@ -3,12 +3,17 @@ const router = express.Router();
 
 const authController = require("./controller/authController");
 const { requiredFields } = require("../../_util/check");
-const { validatePassword } = require("../../_util/middlewares/validation");
 
 router.post(
   "/signin",
   requiredFields("email", "password"),
   authController.emailSignin
+);
+
+router.post(
+  "/signup",
+  requiredFields("email", "password", "name"),
+  authController.emailSignup
 );
 
 // send forget password otp
