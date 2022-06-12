@@ -23,7 +23,7 @@ router.post(
 
 // for multiple images upload
 router.post(
-    "images",
+    "/images",
     protect(Vendor,OrgUser,User),
     uploadController.uploadImages
     );
