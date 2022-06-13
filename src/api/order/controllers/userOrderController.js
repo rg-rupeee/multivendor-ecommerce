@@ -101,7 +101,13 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
 exports.getOrder = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
 
-  const order = await Order.findById({ _id: orderId }).populate("vendorOrders");
+  const order = await Order.findById({ _id: orderId }).populate({
+    path: "vendorOrders",
+    populate: {
+      path: "products.productId",
+      select: { name: 1, images: 1 },
+    },
+  });
 
   if (!order) {
     return next(new AppError("No order found with that id", 404));
