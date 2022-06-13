@@ -105,7 +105,7 @@ exports.getOrder = catchAsync(async (req, res, next) => {
     path: "vendorOrders",
     populate: {
       path: "products.productId",
-      select: { name: 1, images: 1 },
+      select: { name: 1, images: 1, description: 1 },
     },
   });
 
