@@ -8,15 +8,21 @@ const { requiredFields } = require("../../_util/check");
 
 router.get(
   "/:id",
-  protect(OrgUser, "orgUser"),
+  protect(OrgUser),
   factory.getOne(OrgUser, "orgUser")
 );
 
 router.post(
   "/",
   requiredFields("email", "name", "password"),
-  protect(OrgUser, "orgUser"),
+  protect(OrgUser),
   orgUserController.createOrgUser
 );
+
+router.get(
+  "/",
+  protect(OrgUser),
+  factory.getAll(OrgUser,"orgUser")
+)
 
 module.exports = router;
