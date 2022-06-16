@@ -38,7 +38,12 @@ router.use("/vendor", vendorRoutes);
 const newsletterRoutes = require("./newsletter/index");
 router.use("/newsLetter",newsletterRoutes);
 
+
+const statsRoutes = require("./statistics/index");
+router.use("/statistics",statsRoutes);
+
 const uploadRoutes = require("./upload/index");
 router.use("/upload",uploadRoutes);
+
 
 module.exports = router;
