@@ -38,4 +38,7 @@ router.use("/vendor", vendorRoutes);
 const newsletterRoutes = require("./newsletter/index");
 router.use("/newsLetter",newsletterRoutes);
 
+const statsRoutes = require("./statistics/index");
+router.use("/statistics",statsRoutes);
+
 module.exports = router;

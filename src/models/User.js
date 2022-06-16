@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema({
   passwordResetOTP: Number,
   passwordResetExpires: Date,
   passwordResetAttempts: Number,
-});
+},
+{timestamps : true});
 
 userSchema.pre("save", async function (next) {
   // If password is not modified return

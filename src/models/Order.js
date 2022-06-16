@@ -48,7 +48,8 @@ const OrderSchema = new mongoose.Schema({
     default: "Initiated",
     required: true,
   },
-});
+},
+{timestamps : true});
 
 OrderSchema.pre("save", async function (next) {
   let total = 0;
