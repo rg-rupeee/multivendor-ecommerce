@@ -9,10 +9,10 @@ const OrgUser = require("../../models/OrgUser");
 router.get("/:id", factory.getOne(Blog, "blog"));
 
 // GET - get all <A>
-router.get("/", protect(OrgUser), factory.getAll(Blog, "blogs"));
+router.get("/", factory.getAll(Blog, "blogs"));
 
 // GET - get by id < A>
-router.get("/:id", protect(OrgUser), factory.getOne(Blog, "blogs"));
+router.get("/:id", factory.getOne(Blog, "blogs"));
 
 // POST - create <A>
 router.post(
