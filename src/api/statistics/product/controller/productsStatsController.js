@@ -2,132 +2,268 @@ const Order = require("../../../../models/Order");
 const OrgUser = require("../../../../models/OrgUser");
 const Product = require("../../../../models/Product");
 const VendorOrder = require("../../../../models/VendorOrder");
+const catchAsync = require("../../../../utils/catchAsync");
 
-exports.productWeeklyStats = async function(req,res,next) {
-    let date = new Date();
+exports.productMonthlyStats = catchAsync(async function(req,res,next) {
+    let year = req.body.year;
+    let startDate = "01 Jan " + year + " 00:00:00 GMT";
+    let endDate = "01 Jan " + (year+1) + " 00:00:00 GMT";
 
-    var lastweek = new Date(date.getFullYear(), date.getMonth(), date.getDate()-7);
-    
-    let todayDate = date.toLocaleDateString();
+    console.log(startDate)
+    console.log(endDate)
 
-    let lastweekDate = lastweek.toLocaleDateString();
-
-    let orders = await Order.find({createdAt : {
-        $gt : new Date(lastweekDate) , $lte : new Date(todayDate)
-    }})
-    
-    totalsale = orders.length;
-    // console.log(orders.length())
-    var productsSold = {};
-
-    for(var i =0; i<orders.length; i++){
-        var order = order[i];
-        if(order.orderStatus == "Placed"){
-            let vendorOrderIds = order.vendorOrders;
-            for(var j = 0; j<vendorOrderIds.length; j++){
-                let vendorOrderId = vendorOrderIds[j];
-                let vendorOrder = await VendorOrder.findById(vendorOrderId);
-                let productIds = vendorOrder.products;
-                productIds.forEach(productId => {
-                    // productId
-                    if(isNaN(productsSold.productId)){
-                        productsSold.productId = 1;
-                    }else{
-                        productsSold.productId++;
-                    }
-                });
+    const pipeline = [
+        {
+          '$unwind': {
+            'path': '$vendorOrders', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$match': {
+            'orderStatus': 'Initiated'
+          }
+        }, {
+          '$lookup': {
+            'from': 'vendororders', 
+            'localField': 'vendorOrders', 
+            'foreignField': '_id', 
+            'as': 'vendorOrders'
+          }
+        }, {
+          '$match': {
+            'createdAt': {
+              '$gte': new Date(startDate), 
+              '$lt': new Date(endDate)
             }
-        }
-    }
-    // console.log(results);
+          }
+        }, {
+          '$unwind': {
+            'path': '$vendorOrders', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$unwind': {
+            'path': '$vendorOrders.products', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$group': {
+            '_id': '$vendorOrders.products.productId', 
+            'productOrderedAt': {
+              '$push': {
+                'createdAt': '$createdAt'
+              }
+            }, 
+            'totalsale': {
+              '$count': {}
+            }
+          }
+        }, {
+          '$unwind': {
+            'path': '$productOrderedAt', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+            '$group': {
+              '_id': {
+                '$dateToString': {
+                  'format': '%m', 
+                  'date': '$productOrderedAt.createdAt'
+                }
+              }, 
+              'productsIds': {
+                '$addToSet': {
+                  'productId': '$_id', 
+                  'totalsale': '$totalsale'
+                }
+              }
+            }
+          }, {
+            '$project': {
+              'productsIds': 1, 
+              'Month': '$_id', 
+              '_id': 0
+            }
+          }
+      ];
+
+    productsSoldPerYear = await Order.aggregate(pipeline);
+
+    console.log("result is ",productsSoldPerYear)
+
     res.json({
         status : "success",
-        result : productsSold
+        result : productsSoldPerYear
     })
-}
+})
 
-exports.productMonthlyStats = async function(req,res,next) {
-    let date = new Date();
-
-    var lastweek = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate());
+exports.productYearlyStats = catchAsync(async function(req,res,next) {
     
-    let todayDate = date.toLocaleDateString();
-
-    let lastweekDate = lastweek.toLocaleDateString();
-
-    let orders = await Order.find({createdAt : {
-        $gt : new Date(lastweekDate) , $lte : new Date(todayDate)
-    }})
-    
-    totalsale = orders.length;
-    // console.log(orders.length())
-    var productsSold = {};
-
-    for(var i =0; i<orders.length; i++){
-        var order = order[i];
-        if(order.orderStatus == "Placed"){
-            let vendorOrderIds = order.vendorOrders;
-            for(var j = 0; j<vendorOrderIds.length; j++){
-                let vendorOrderId = vendorOrderIds[j];
-                let vendorOrder = await VendorOrder.findById(vendorOrderId);
-                let productIds = vendorOrder.products;
-                productIds.forEach(productId => {
-                    // productId
-                    if(isNaN(productsSold.productId)){
-                        productsSold.productId = 1;
-                    }else{
-                        productsSold.productId++;
-                    }
-                });
+    const pipeline = [
+        {
+          '$unwind': {
+            'path': '$vendorOrders', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$lookup': {
+            'from': 'vendororders', 
+            'localField': 'vendorOrders', 
+            'foreignField': '_id', 
+            'as': 'vendorOrders'
+          }
+        }, {
+          '$unwind': {
+            'path': '$vendorOrders', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$unwind': {
+            'path': '$vendorOrders.products', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$group': {
+            '_id': '$vendorOrders.products.productId', 
+            'productOrderedAt': {
+              '$push': {
+                'createdAt': '$createdAt'
+              }
+            }, 
+            'totalsale': {
+              '$count': {}
             }
-        }
-    }
-    // console.log(results);
+          }
+        }, {
+          '$unwind': {
+            'path': '$productOrderedAt', 
+            'preserveNullAndEmptyArrays': true
+          }
+        },  {
+            '$group': {
+              '_id': {
+                '$dateToString': {
+                  'format': '%Y', 
+                  'date': '$productOrderedAt.createdAt'
+                }
+              }, 
+              'productsIds': {
+                '$addToSet': {
+                  'productId': '$_id', 
+                  'totalsale': '$totalsale'
+                }
+              }
+            }
+          }, {
+            '$project': {
+              'productsIds': 1, 
+              'Year': '$_id', 
+              '_id': 0
+            }
+          }
+      ];
+
+    productsSoldPerYear = await Order.aggregate(pipeline);
+
+    console.log("result is ",productsSoldPerYear)
+
     res.json({
         status : "success",
-        result : productsSold
+        result : productsSoldPerYear
     })
-}
+})
 
-exports.productYearlyStats = async function(req,res,next) {
-    let date = new Date();
-
-    var lastweek = new Date(date.getFullYear() - 1, date.getMonth() - 1, date.getDate());
+exports.productDailyStats = catchAsync(async function(req,res,next) {
+    let year = req.body.year;
+    let month = req.body.month;
     
-    let todayDate = date.toLocaleDateString();
+    let startDate = year+"-"+month+"-1 00:00:00 GMT";
+    let endDate = year+"-"+(month+1)+"-1 00:00:00 GMT";
 
-    let lastweekDate = lastweek.toLocaleDateString();
+    console.log(startDate)
+    console.log(endDate)
 
-    let orders = await Order.find({createdAt : {
-        $gt : new Date(lastweekDate) , $lte : new Date(todayDate)
-    }})
-    
-    totalsale = orders.length;
-    // console.log(orders.length())
-    var productsSold = {};
-
-    for(var i =0; i<orders.length; i++){
-        var order = order[i];
-        if(order.orderStatus == "Placed"){
-            let vendorOrderIds = order.vendorOrders;
-            for(var j = 0; j<vendorOrderIds.length; j++){
-                let vendorOrderId = vendorOrderIds[j];
-                let vendorOrder = await VendorOrder.findById(vendorOrderId);
-                let productIds = vendorOrder.products;
-                productIds.forEach(productId => {
-                    // productId
-                    if(isNaN(productsSold.productId)){
-                        productsSold.productId = 1;
-                    }else{
-                        productsSold.productId++;
-                    }
-                });
+    const pipeline = [
+        {
+          '$unwind': {
+            'path': '$vendorOrders', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$match': {
+            'orderStatus': 'Initiated'
+          }
+        }, {
+          '$lookup': {
+            'from': 'vendororders', 
+            'localField': 'vendorOrders', 
+            'foreignField': '_id', 
+            'as': 'vendorOrders'
+          }
+        }, {
+          '$match': {
+            'createdAt': {
+              '$gte': new Date(startDate), 
+              '$lt': new Date(endDate)
             }
-        }
-    }
-    // console.log(results);
+          }
+        }, {
+          '$unwind': {
+            'path': '$vendorOrders', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$unwind': {
+            'path': '$vendorOrders.products', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$group': {
+            '_id': '$vendorOrders.products.productId', 
+            'productOrderedAt': {
+              '$push': {
+                'createdAt': '$createdAt'
+              }
+            }, 
+            'totalsale': {
+              '$count': {}
+            }
+          }
+        }, {
+          '$unwind': {
+            'path': '$productOrderedAt', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+            '$group': {
+              '_id': {
+                '$dateToString': {
+                  'format': '%d', 
+                  'date': '$productOrderedAt.createdAt'
+                }
+              }, 
+              'productsIds': {
+                '$addToSet': {
+                  'productId': '$_id', 
+                  'totalsale': '$totalsale'
+                }
+              }
+            }
+          }, {
+            '$project': {
+              'productsIds': 1, 
+              'Day': '$_id', 
+              '_id': 0
+            }
+          }
+      ];
+
+    productsSoldPerYear = await Order.aggregate(pipeline);
+
+    console.log("result is ",productsSoldPerYear)
+
     res.json({
         status : "success",
-        result : productsSold
+        result : productsSoldPerYear
     })
-}
+})
