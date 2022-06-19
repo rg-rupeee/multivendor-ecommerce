@@ -74,6 +74,51 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getOneProduct = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(
+    Product.findOne({ _id: req.params.id }),
+    req.query
+  ).limitFields();
+
+  let product = await features.query;
+
+  const hasProduct = (products, product) => {
+    for (const pdt of products) {
+      if (pdt._id.equals(product._id)) return true;
+    }
+
+    return false;
+  };
+
+  if (req.user) {
+    let userCart = await Cart.findOne({ userId: req.user.id });
+    if (!userCart) {
+      userCart = await Cart.create({ userId: req.user.id });
+    }
+
+    let userWishlist = await Wishlist.findOne({ userId: req.user.id });
+    if (!userWishlist) {
+      userWishlist = await Wishlist.create({ userId: req.user.id });
+    }
+
+    const cartProducts = userCart.products;
+    const wishlistProducts = userWishlist.products;
+
+    if (hasProduct(cartProducts, product)) {
+      product.inCart = true;
+    }
+
+    if (hasProduct(wishlistProducts, product)) {
+      product.inWishlist = true;
+    }
+  }
+
+  return res.json({
+    status: "success",
+    product,
+  });
+});
+
 exports.getMultipleProducts = catchAsync(async (req, res, next) => {
   if (!Array.isArray(req.body.products)) {
     return next(new AppError("products must be an array", 400));

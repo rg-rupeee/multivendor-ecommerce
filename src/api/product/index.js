@@ -25,7 +25,7 @@ router.post(
 
 router.post("/search", requiredFields("searchKey"), productController.search);
 
-router.get("/:id", factory.getOne(Product, "product"));
+router.get("/:id", optionalProtect(User), productController.getOneProduct);
 
 router.get("/category/:categoryId", productController.getProductsByCategory);
 

@@ -71,9 +71,7 @@ exports.optionalProtect = (...models) => {
       }
     }
 
-    return next(
-      new AppError("User belonging to this token does not exists", 401)
-    );
+    return next();
   });
 };
 
