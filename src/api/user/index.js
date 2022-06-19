@@ -8,6 +8,8 @@ const User = require("../../models/User");
 
 router.get("/all", protect(OrgUser), factory.getAll(User));
 
+router.get("/all/:id", protect(OrgUser), factory.getOne(User));
+
 const meRouter = require("./me/index");
 router.use("/me", meRouter);
 

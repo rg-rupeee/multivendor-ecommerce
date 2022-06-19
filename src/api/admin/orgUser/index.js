@@ -6,11 +6,9 @@ const orgUserController = require("./controller/orgUserController");
 const factory = require("../../_util/handlerFactory");
 const { requiredFields } = require("../../_util/check");
 
-router.get(
-  "/:id",
-  protect(OrgUser),
-  factory.getOne(OrgUser, "orgUser")
-);
+router.get("/:id", protect(OrgUser), factory.getOne(OrgUser, "orgUser"));
+
+router.delete("/:id", protect(OrgUser), factory.deleteOne(OrgUser, "orgUser"));
 
 router.post(
   "/",
@@ -19,10 +17,6 @@ router.post(
   orgUserController.createOrgUser
 );
 
-router.get(
-  "/",
-  protect(OrgUser),
-  factory.getAll(OrgUser,"orgUser")
-)
+router.get("/", protect(OrgUser), factory.getAll(OrgUser, "orgUser"));
 
 module.exports = router;
