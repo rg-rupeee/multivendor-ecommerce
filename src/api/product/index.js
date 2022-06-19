@@ -7,11 +7,15 @@ const productController = require("./controller/productController");
 
 const reviewRouter = require("./review/index");
 const { requiredFields, restrictedFields } = require("../_util/check");
-const { protect } = require("../_util/middlewares/authMiddlewares");
+const {
+  protect,
+  optionalProtect,
+} = require("../_util/middlewares/authMiddlewares");
 const OrgUser = require("../../models/OrgUser");
+const User = require("../../models/User");
 router.use("/review", reviewRouter);
 
-router.get("/", factory.getAll(Product, "products"));
+router.get("/", optionalProtect(User), productController.getAllProducts);
 
 router.post(
   "/multiple",
