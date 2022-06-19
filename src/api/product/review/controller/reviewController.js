@@ -9,7 +9,10 @@ exports.getReviews = catchAsync(async (req, res, next) => {
 
   let features;
   if (!populate) {
-    features = new APIFeatures(Review.find({ productId }), req.query)
+    features = new APIFeatures(
+      Review.find({ productId }).populate("userId"),
+      req.query
+    )
       .sort()
       .paginate();
   } else {

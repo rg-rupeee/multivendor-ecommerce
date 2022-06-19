@@ -1,4 +1,5 @@
-const Category = require("../../../models/Category");
+const Cart = require("../../../models/Cart");
+const Wishlist = require("../../../models/Wishlist");
 const Product = require("../../../models/Product");
 const AppError = require("../../../utils/appError");
 const catchAsync = require("../../../utils/catchAsync");
@@ -20,6 +21,55 @@ exports.getProductsByCategory = catchAsync(async (req, res, next) => {
 
   return res.json({
     status: "success",
+    products,
+  });
+});
+
+exports.getAllProducts = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(Product.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  let products = await features.query;
+
+  const hasProduct = (products, product) => {
+    for (const pdt of products) {
+      if (pdt._id.equals(product._id)) return true;
+    }
+
+    return false;
+  };
+
+  if (req.user) {
+    let userCart = await Cart.findOne({ userId: req.user.id });
+    if (!userCart) {
+      userCart = await Cart.create({ userId: req.user.id });
+    }
+
+    let userWishlist = await Wishlist.findOne({ userId: req.user.id });
+    if (!userWishlist) {
+      userWishlist = await Wishlist.create({ userId: req.user.id });
+    }
+
+    const cartProducts = userCart.products;
+    const wishlistProducts = userWishlist.products;
+
+    for (const product of products) {
+      if (hasProduct(cartProducts, product)) {
+        product.inCart = true;
+      }
+
+      if (hasProduct(wishlistProducts, product)) {
+        product.inWishlist = true;
+      }
+    }
+  }
+
+  return res.json({
+    status: "success",
+    results: products.length,
     products,
   });
 });

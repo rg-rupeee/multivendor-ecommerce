@@ -88,6 +88,16 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    inCart: {
+      type: Boolean,
+      default: false,
+      enum: [false],
+    },
+    inWishlist: {
+      type: Boolean,
+      default: false,
+      enum: [false],
+    },
   },
   { timestamps: true }
 );
