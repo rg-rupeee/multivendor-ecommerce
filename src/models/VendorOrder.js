@@ -2,48 +2,53 @@ const mongoose = require("mongoose");
 const Vendor = require("./Vendor");
 const { sendMail } = require("./../utils/email");
 
-const vendorOrderSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  vendorId: {
-    type: mongoose.Types.ObjectId,
-    ref: "Vendor",
-    required: true,
-  },
-  products: [
-    {
-      productId: {
-        type: mongoose.Types.ObjectId,
-        ref: "Product",
-      },
-      price: { type: Number, min: 0 },
-      quantity: {
-        type: Number,
-        default: 1,
-      },
-      isCustom: {
-        type: Boolean,
-        default: false,
-      },
-      customDescription: String,
-      color: String,
+const vendorOrderSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-  ],
-  total: {
-    type: Number,
-    default: 0,
-    min: 0,
+    vendorId: {
+      type: mongoose.Types.ObjectId,
+      ref: "Vendor",
+      required: true,
+    },
+    products: [
+      {
+        productId: {
+          type: mongoose.Types.ObjectId,
+          ref: "Product",
+        },
+        price: { type: Number, min: 0 },
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+        isCustom: {
+          type: Boolean,
+          default: false,
+        },
+        customDescription: String,
+        color: String,
+      },
+    ],
+    total: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    orderStatus: {
+      type: String,
+      enum: ["Placed", "Completed", "Transistioning"],
+      default: "Placed",
+      required: true,
+    },
   },
-  orderStatus: {
-    type: String,
-    enum: ["Placed", "Completed", "Transistioning"],
-    default: "Placed",
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 vendorOrderSchema.pre("save", function (next) {
   let total = 0;
