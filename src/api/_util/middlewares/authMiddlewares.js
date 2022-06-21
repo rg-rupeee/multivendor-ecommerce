@@ -56,7 +56,12 @@ exports.optionalProtect = (...models) => {
       return next();
     }
 
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return next();
+    }
 
     for (var i = 0; i < models.length; i++) {
       let model = models[i];
