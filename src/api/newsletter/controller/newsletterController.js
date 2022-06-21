@@ -28,25 +28,13 @@ exports.sendNewsLetter = catchAsync(async (req, res, next) => {
 });
 
 exports.subscribe = catchAsync(async (req, res, next) => {
-  const id = req.user.id;
+  const { email } = req.body;
 
-  const user = await User.findById(id);
-  if (!user) {
-    return next(new AppError("User with this email do not exists", 404));
-  }
-
-  const email = user.email;
   let newsLetter = await NewsLetter.findOne({ email: email });
 
-  if (newsLetter != null)
-    return res.json({
-      status: "success",
-      message: "Already subscribed to newsletter",
-    });
-
-  newsletter = new NewsLetter({ email });
-
-  await newsletter.save();
+  if (!newsLetter) {
+    newsLetter = await NewsLetter.create({ email });
+  }
 
   return res.json({
     status: "success",
@@ -55,15 +43,13 @@ exports.subscribe = catchAsync(async (req, res, next) => {
 });
 
 exports.unsubscribe = catchAsync(async (req, res, next) => {
-  const id = req.user.id;
+  const { email } = req.body;
 
-  const user = await User.findById(id);
-  if (!user) {
-    return next(new AppError("User with this email do not exists", 404));
+  const newsLetter = await NewsLetter.findOne({ email: email });
+
+  if (newsLetter) {
+    await NewsLetter.deleteOne({ email: email });
   }
-
-  const email = user.email;
-  await NewsLetter.deleteOne({ email: email });
 
   return res.json({
     status: "success",

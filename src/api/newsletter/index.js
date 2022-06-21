@@ -8,9 +8,17 @@ const { requiredFields } = require("../_util/check");
 const newsletterController = require("./controller/newsletterController");
 const OrgUser = require("../../models/OrgUser");
 
-router.post("/subscribe", newsletterController.subscribe);
+router.post(
+  "/subscribe",
+  requiredFields("email"),
+  newsletterController.subscribe
+);
 
-router.delete("/unsubscribe", newsletterController.unsubscribe);
+router.delete(
+  "/unsubscribe",
+  requiredFields("email"),
+  newsletterController.unsubscribe
+);
 
 router.post(
   "/send",
