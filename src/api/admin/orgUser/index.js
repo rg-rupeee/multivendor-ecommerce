@@ -19,4 +19,5 @@ router.post(
 
 router.get("/", protect(OrgUser), factory.getAll(OrgUser, "orgUser"));
 
+router.post("/search", requiredFields("searchKey"), factory.search(OrgUser, "name"));
 module.exports = router;

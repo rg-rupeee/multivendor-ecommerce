@@ -34,4 +34,6 @@ router.delete("/:id", protect(OrgUser), factory.deleteOne(Coupon, "coupon"));
 // PATCH - update <A>
 router.patch("/:id", protect(OrgUser), factory.updateOne(Coupon, "coupon"));
 
+router.post("/search",requiredFields("searchKey"), factory.search(Coupon,'code'));
+
 module.exports = router;

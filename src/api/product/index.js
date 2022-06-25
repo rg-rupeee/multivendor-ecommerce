@@ -23,7 +23,7 @@ router.post(
   productController.getMultipleProducts
 );
 
-router.post("/search", requiredFields("searchKey"), productController.search);
+router.post("/search", requiredFields("searchKey"), factory.search(Product,'name'));
 
 router.get("/:id", optionalProtect(User), productController.getOneProduct);
 

@@ -6,6 +6,7 @@ const Category = require("../../models/Category");
 const OrgUser = require("../../models/OrgUser");
 
 const { protect } = require("../_util/middlewares/authMiddlewares");
+const { requiredFields } = require("../_util/check");
 
 router.get("/", factory.getAll(Category, "categories"));
 
@@ -19,4 +20,5 @@ router.delete(
 
 router.post("/", protect(OrgUser), factory.createOne(Category, "category"));
 
+router.post("/search",requiredFields("searchKey"), factory.search(Category,'name'));
 module.exports = router;

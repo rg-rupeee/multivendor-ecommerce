@@ -1,7 +1,7 @@
 const express = require("express");
 const OrgUser = require("../../models/OrgUser");
 const { protect } = require("../_util/middlewares/authMiddlewares");
-const { restrictedFields } = require("../_util/check");
+const { restrictedFields, requiredFields } = require("../_util/check");
 const router = express.Router();
 const factory = require("../_util/handlerFactory");
 
@@ -29,5 +29,7 @@ router.patch(
 // DELETE - delete < A>
 // TODO: all products should mark vendor as not verified and all of its products as unpublished
 router.delete("/:id", protect(OrgUser), factory.deleteOne(Vendor, "vendor"));
+
+router.post("/search", requiredFields("searchKey"), factory.search(Vendor,'name'));
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { protect } = require("../_util/middlewares/authMiddlewares");
+const { protect, restrictTo } = require("../_util/middlewares/authMiddlewares");
 const OrgUser = require("../../models/OrgUser");
 const factory = require("../_util/handlerFactory");
 const Order = require("../../models/Order");
@@ -11,6 +11,7 @@ const { requiredFields } = require("../_util/check");
 
 const userOrderController = require("./controllers/userOrderController");
 const venddorOrderController = require("./controllers/vendorOrderController");
+const VendorOrder = require("../../models/VendorOrder");
 
 // get user's all orders
 router.get("/user", protect(User), userOrderController.getMyOrders);
@@ -29,6 +30,12 @@ router.post(
   userOrderController.applyCoupon
 );
 
+// search orders
+router.post("/search",
+  protect(OrgUser),
+  restrictTo("Admin"),
+  requiredFields("searchKey"),factory.search(Order,"_id"));
+
 // get vendor's all orders
 router.get("/vendor", protect(Vendor), venddorOrderController.getMyOrders);
 
@@ -46,6 +53,9 @@ router.patch(
   requiredFields("orderStatus"),
   venddorOrderController.updateOrderStatus
 );
+
+// search vendor orders
+router.post("/vendor/search",requiredFields("searchKey"),factory.search(VendorOrder,"_id"));
 
 // get all orders
 router.get("/admin", protect(OrgUser), factory.getAll(Order, "order"));

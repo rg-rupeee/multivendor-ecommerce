@@ -30,6 +30,7 @@ exports.protect = (...models) => {
       if (currentUser != null) {
         req.user = {
           id: currentUser._id,
+          role : currentUser.role
         };
         return next();
       }
@@ -71,6 +72,7 @@ exports.optionalProtect = (...models) => {
       if (currentUser != null) {
         req.user = {
           id: currentUser._id,
+          role : currentUser.role
         };
         return next();
       }
