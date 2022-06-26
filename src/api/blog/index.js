@@ -35,4 +35,5 @@ router.delete("/:id", protect(OrgUser), factory.deleteOne(Blog, "blogs"));
 // PATCH - update <A>
 router.patch("/:id", protect(OrgUser), factory.updateOne(Blog, "blogs"));
 
+router.post("/search", requiredFields("searchKey"), factory.search(Blog,'title'));
 module.exports = router;
