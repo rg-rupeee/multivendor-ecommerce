@@ -142,3 +142,31 @@ exports.getMultipleProducts = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.createVendorProduct = catchAsync(async (req, res, next) => {
+  req.body.vendorId = req.user.id;
+
+  const product = await Product.create(req.body);
+
+  return res.status(201).json({
+    status: "success",
+    product,
+  });
+});
+
+exports.getProductsByVendor = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(
+    Product.find({ vendorId: req.user.id }),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  let products = await features.query;
+
+  return res.status(201).json({
+    status: "success",
+    products,
+  });
+});

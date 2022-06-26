@@ -13,6 +13,7 @@ const {
 } = require("../_util/middlewares/authMiddlewares");
 const OrgUser = require("../../models/OrgUser");
 const User = require("../../models/User");
+const Vendor = require("../../models/Vendor");
 router.use("/review", reviewRouter);
 
 router.get("/", optionalProtect(User), productController.getAllProducts);
@@ -23,14 +24,28 @@ router.post(
   productController.getMultipleProducts
 );
 
-router.post("/search", requiredFields("searchKey"), factory.search(Product,'name'));
+router.post(
+  "/search",
+  requiredFields("searchKey"),
+  factory.search(Product, "name")
+);
+
+router.get(
+  "/vendor/my",
+  protect(Vendor),
+  productController.getProductsByVendor
+);
 
 router.get("/:id", optionalProtect(User), productController.getOneProduct);
 
 router.get("/category/:categoryId", productController.getProductsByCategory);
 
-router.post("/", protect(OrgUser), factory.createOne(Product, "product"));
+router.post("/", protect(Vendor), productController.createVendorProduct);
 
-router.delete("/:id", protect(OrgUser), factory.deleteOne(Product, "product"));
+router.delete(
+  "/:id",
+  protect(OrgUser, Vendor),
+  factory.deleteOne(Product, "product")
+);
 
 module.exports = router;
