@@ -1,10 +1,7 @@
-const Order = require("../../../../models/Order");
-const OrgUser = require("../../../../models/OrgUser");
-const Product = require("../../../../models/Product");
-const VendorOrder = require("../../../../models/VendorOrder");
-const catchAsync = require("../../../../utils/catchAsync");
+const Order = require("../../../../../models/Order");
+const catchAsync = require("../../../../../utils/catchAsync");
 
-exports.productMonthlyStats = catchAsync(async function(req,res,next) {
+exports.productMonthlyStats = catchAsync(async function(req,res) {
     let year = req.body.year;
     let startDate = "01 Jan " + year + " 00:00:00 GMT";
     let endDate = "01 Jan " + (year+1) + " 00:00:00 GMT";
@@ -20,7 +17,7 @@ exports.productMonthlyStats = catchAsync(async function(req,res,next) {
           }
         }, {
           '$match': {
-            'orderStatus': 'Initiated'
+            'orderStatus': 'Placed'
           }
         }, {
           '$lookup': {
@@ -87,23 +84,27 @@ exports.productMonthlyStats = catchAsync(async function(req,res,next) {
           }
       ];
 
-    productsSoldPerYear = await Order.aggregate(pipeline);
+    productsSoldPerMonth = await Order.aggregate(pipeline);
 
-    console.log("result is ",productsSoldPerYear)
+    console.log("result is ",productsSoldPerMonth)
 
     res.json({
         status : "success",
-        result : productsSoldPerYear
+        result : productsSoldPerMonth
     })
 })
 
-exports.productYearlyStats = catchAsync(async function(req,res,next) {
+exports.productYearlyStats = catchAsync(async function(req,res) {
     
     const pipeline = [
         {
           '$unwind': {
             'path': '$vendorOrders', 
             'preserveNullAndEmptyArrays': true
+          }
+        },{
+          '$match': {
+            'orderStatus': 'Placed'
           }
         }, {
           '$lookup': {
@@ -173,7 +174,7 @@ exports.productYearlyStats = catchAsync(async function(req,res,next) {
     })
 })
 
-exports.productDailyStats = catchAsync(async function(req,res,next) {
+exports.productDailyStats = catchAsync(async function(req,res) {
     let year = req.body.year;
     let month = req.body.month;
     
@@ -191,7 +192,7 @@ exports.productDailyStats = catchAsync(async function(req,res,next) {
           }
         }, {
           '$match': {
-            'orderStatus': 'Initiated'
+            'orderStatus': 'Placed'
           }
         }, {
           '$lookup': {
@@ -258,12 +259,12 @@ exports.productDailyStats = catchAsync(async function(req,res,next) {
           }
       ];
 
-    productsSoldPerYear = await Order.aggregate(pipeline);
+    productsSoldPerDay = await Order.aggregate(pipeline);
 
-    console.log("result is ",productsSoldPerYear)
+    console.log("result is ",productsSoldPerDay)
 
     res.json({
         status : "success",
-        result : productsSoldPerYear
+        result : productsSoldPerDay
     })
 })
