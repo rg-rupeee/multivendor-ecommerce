@@ -1,5 +1,5 @@
-const Order = require("../../../../models/Order");
-const catchAsync = require("../../../../utils/catchAsync");
+const Order = require("../../../../../models/VendorOrder");
+const catchAsync = require("../../../../../utils/catchAsync");
 
 exports.vendorProductMonthlyStats = catchAsync(async function(req,res) {
     let year = req.body.year;
@@ -23,7 +23,7 @@ exports.vendorProductMonthlyStats = catchAsync(async function(req,res) {
           }
         }, {
           '$match': {
-            'tempVendorId': '629ec116b4eb4eaa6c1ac4a8'
+            'tempVendorId': req.user.id
           }
         }, {
           '$match': {
@@ -81,7 +81,7 @@ exports.vendorProductYearlyStats = catchAsync(async function(req,res) {
             }
         }, {
             '$match': {
-                'tempVendorId': '629ec116b4eb4eaa6c1ac4a8'
+                'tempVendorId': req.user.id
                 }
         }, {
             '$unwind': {
@@ -140,7 +140,7 @@ exports.vendorProductDailyStats = catchAsync(async function(req,res) {
           }
         }, {
           '$match': {
-            'tempVendorId': '629ec116b4eb4eaa6c1ac4a8'
+            'tempVendorId': req.user.id
           }
         }, {
           '$match': {
@@ -178,6 +178,6 @@ exports.vendorProductDailyStats = catchAsync(async function(req,res) {
 
     res.json({
         status : "success",
-        result : productSoldPerDay
+        result : productsSoldPerDay
     })
 })

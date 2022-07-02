@@ -1,6 +1,6 @@
 const express = require('express');
-const OrgUser = require('../../../models/OrgUser');
-const { protect } = require('../../_util/middlewares/authMiddlewares');
+const OrgUser = require('../../../../models/OrgUser');
+const { protect } = require('../../../_util/middlewares/authMiddlewares');
 const router = express.Router();
 const controller = require("./controller/productsStatsController")
 
