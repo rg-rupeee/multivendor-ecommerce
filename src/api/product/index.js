@@ -24,9 +24,7 @@ router.post(
   productController.getMultipleProducts
 );
 
-<<<<<<< HEAD
 router.post("/search", requiredFields("searchKey"), factory.search(Product,'name'));
-=======
 router.post(
   "/search",
   requiredFields("searchKey"),
@@ -38,7 +36,6 @@ router.get(
   protect(Vendor),
   productController.getProductsByVendor
 );
->>>>>>> f32f8d5e527982b7ca66aa41d39f60487fc4f8f1
 
 router.get("/:id", optionalProtect(User), productController.getOneProduct);
 

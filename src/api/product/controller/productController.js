@@ -142,8 +142,6 @@ exports.getMultipleProducts = catchAsync(async (req, res, next) => {
   });
 });
 
-<<<<<<< HEAD
-=======
 exports.createVendorProduct = catchAsync(async (req, res, next) => {
   req.body.vendorId = req.user.id;
 
@@ -172,4 +170,3 @@ exports.getProductsByVendor = catchAsync(async (req, res, next) => {
     products,
   });
 });
->>>>>>> f32f8d5e527982b7ca66aa41d39f60487fc4f8f1
