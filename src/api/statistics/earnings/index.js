@@ -2,24 +2,24 @@ const express = require('express');
 const OrgUser = require('../../../models/OrgUser');
 const { protect } = require('../../_util/middlewares/authMiddlewares');
 const router = express.Router();
-const controller = require("./controller/userStatsController")
+const controller = require("./controller/earningsStatsController")
 
 router.get(
     "/yearly",
     protect(OrgUser),
-    controller.userYearlyStats
+    controller.earningsYearlyStats
 )
 
 router.get(
     "/monthly",
     protect(OrgUser),
-    controller.userMonthlyStats
+    controller.earningsMonthlyStats
 )
 
 router.get(
     "/daily",
     protect(OrgUser),
-    controller.userDailyStats
+    controller.earningsDailyStats
 );
 
 module.exports = router;
