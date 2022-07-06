@@ -24,7 +24,7 @@ const orderRoutes = require("./order/index");
 router.use("/order", orderRoutes);
 
 const couponRoutes = require("./coupon/index");
-router.use("/coupon",couponRoutes);
+router.use("/coupon", couponRoutes);
 
 const payoutRoutes = require("./payout/index");
 router.use("/payout", payoutRoutes);
@@ -36,14 +36,15 @@ const vendorRoutes = require("./vendor/index");
 router.use("/vendor", vendorRoutes);
 
 const newsletterRoutes = require("./newsletter/index");
-router.use("/newsLetter",newsletterRoutes);
-
+router.use("/newsLetter", newsletterRoutes);
 
 const statsRoutes = require("./statistics/index");
-router.use("/statistics",statsRoutes);
+router.use("/statistics", statsRoutes);
 
 const uploadRoutes = require("./upload/index");
-router.use("/upload",uploadRoutes);
+router.use("/upload", uploadRoutes);
 
+const paymentRoutes = require("./payment/index");
+router.use("/payment", paymentRoutes);
 
 module.exports = router;
