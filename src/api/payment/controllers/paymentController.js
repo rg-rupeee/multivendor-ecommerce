@@ -44,13 +44,13 @@ exports.paymentCapturedWebhook = catchAsync(async (req, res, next) => {
 
   const shasum = crypto.createHmac(
     "sha256",
-    process.env.WEBHOOK_SECRET_RAZORPAY
+    process.env.RAZORPAY_WEBHOOK_SECRET
   );
   shasum.update(JSON.stringify(req.body));
   const digest = shasum.digest("hex");
-  // console.log(digest, req.headers["x-razorpay-signature"]);
+  // console.log({ digest, header: req.headers["x-razorpay-signature"] });
 
-  if (digest === req.headers["x-razorpay-signature"]) {
+  if (digest == req.headers["x-razorpay-signature"]) {
     console.log("request is legit");
     // process it
     const updatedOrder = await Order.findOneAndUpdate(
