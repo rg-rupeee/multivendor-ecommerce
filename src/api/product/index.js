@@ -46,6 +46,8 @@ router.get("/category/:categoryId", productController.getProductsByCategory);
 
 router.post("/", protect(Vendor), productController.createVendorProduct);
 
+router.patch("/:id", protect(Vendor), factory.updateOne(Product, "product"));
+
 router.delete(
   "/:id",
   protect(OrgUser, Vendor),

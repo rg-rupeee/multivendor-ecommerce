@@ -48,6 +48,7 @@ const OrderSchema = new mongoose.Schema({
     default: "Initiated",
     required: true,
   },
+  razorpayOrderId: String
 },
 {timestamps : true});
 
