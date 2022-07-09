@@ -11,13 +11,13 @@ router.get(
     controller.vendorProductYearlyStats
 )
 
-router.get(
+router.post(
     "/monthly",
     protect(Vendor),
     controller.vendorProductMonthlyStats
 )
 
-router.get(
+router.post(
     "/daily",
     protect(Vendor),
     controller.vendorProductDailyStats
