@@ -25,12 +25,15 @@ router.post(
 );
 
 router.post("/search", requiredFields("searchKey"), factory.search(Product,'name'));
+
 router.post(
-  "/search",
+  "/vendor/search",
+  protect(Vendor),
   requiredFields("searchKey"),
-  factory.search(Product, "name")
+  productController.searchVendorProduct("name")
 );
 
+// router
 router.get(
   "/vendor/my",
   protect(Vendor),

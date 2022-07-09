@@ -10,13 +10,13 @@ router.get(
     controller.earningsYearlyStats
 )
 
-router.get(
+router.post(
     "/monthly",
     protect(OrgUser),
     controller.earningsMonthlyStats
 )
 
-router.get(
+router.post(
     "/daily",
     protect(OrgUser),
     controller.earningsDailyStats
