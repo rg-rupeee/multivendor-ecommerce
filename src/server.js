@@ -21,7 +21,7 @@ connectDB();
 cloudinary();
 
 // setting up server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const server = app.listen(port, () => {
 	console.log(`Listening to Server on port ${port} *_*`);
 });
