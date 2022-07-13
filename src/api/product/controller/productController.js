@@ -7,6 +7,7 @@ const APIFeatures = require("../../_util/apiFeatures");
 
 exports.getProductsByCategory = catchAsync(async (req, res, next) => {
   const { categoryId } = req.params;
+  const { page } = req.query;
 
   const features = new APIFeatures(
     Product.find({ category: categoryId }),
@@ -21,11 +22,15 @@ exports.getProductsByCategory = catchAsync(async (req, res, next) => {
 
   return res.json({
     status: "success",
+    results: products.length,
+    page: page ? page : 1,
     products,
   });
 });
 
 exports.getAllProducts = catchAsync(async (req, res, next) => {
+  const { page } = req.query;
+
   const features = new APIFeatures(Product.find(), req.query)
     .filter()
     .sort()
@@ -70,6 +75,7 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
   return res.json({
     status: "success",
     results: products.length,
+    page: page ? page : 1,
     products,
   });
 });
@@ -175,6 +181,8 @@ exports.createVendorProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.getProductsByVendor = catchAsync(async (req, res, next) => {
+  const { page } = req.query;
+
   const features = new APIFeatures(
     Product.find({ vendorId: req.user.id }),
     req.query
@@ -188,6 +196,8 @@ exports.getProductsByVendor = catchAsync(async (req, res, next) => {
 
   return res.status(201).json({
     status: "success",
+    results: products.length,
+    page: page ? page : 1,
     products,
   });
 });
