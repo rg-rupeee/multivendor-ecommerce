@@ -5,39 +5,8 @@ const AppError = require("../../../utils/appError");
 const catchAsync = require("../../../utils/catchAsync");
 const APIFeatures = require("../../_util/apiFeatures");
 
-exports.getProductsByCategory = catchAsync(async (req, res, next) => {
-  const { categoryId } = req.params;
-  const { page } = req.query;
-
-  const features = new APIFeatures(
-    Product.find({ category: categoryId }),
-    req.query
-  )
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const products = await features.query;
-
-  return res.json({
-    status: "success",
-    results: products.length,
-    page: page ? page : 1,
-    products,
-  });
-});
-
-exports.getAllProducts = catchAsync(async (req, res, next) => {
-  const { page } = req.query;
-
-  const features = new APIFeatures(Product.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  let products = await features.query;
+const getWishlistandCartProductDataForUser = async (req, Products) => {
+  let products = Products;
 
   const hasProduct = (products, product) => {
     for (const pdt of products) {
@@ -72,10 +41,62 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
     }
   }
 
+  return products;
+};
+
+exports.getProductsByCategory = catchAsync(async (req, res, next) => {
+  const { categoryId } = req.params;
+  const { page } = req.query;
+
+  const features = new APIFeatures(
+    Product.find({ category: categoryId }),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  let products = await features.query;
+
+  const Features = new APIFeatures(
+    Product.find({ category: categoryId }),
+    req.query
+  ).filter();
+  let totalResults = await Features.query.countDocuments();
+
+  products = await getWishlistandCartProductDataForUser(req, products);
+
   return res.json({
     status: "success",
     results: products.length,
     page: page ? page : 1,
+    totalResults,
+    products,
+  });
+});
+
+exports.getAllProducts = catchAsync(async (req, res, next) => {
+  const { page } = req.query;
+
+  const features = new APIFeatures(Product.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  let products = await features.query;
+
+  const Features = new APIFeatures(Product.find(), req.query).filter();
+  let totalResults = await Features.query.countDocuments();
+
+  products = await getWishlistandCartProductDataForUser(req, products);
+
+  return res.json({
+    status: "success",
+    results: products.length,
+    page: page ? page : 1,
+    totalResults,
     products,
   });
 });
@@ -148,26 +169,30 @@ exports.getMultipleProducts = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.searchVendorProduct =(searchField) => catchAsync(async (req, res, next) => {
-  const { searchKey } = req.body;
-  
-  const features = new APIFeatures(
-    Product.find({ [searchField]: new RegExp(searchKey, "i"), vendorId : req.user.id }),
-    req.query
-  )
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
+exports.searchVendorProduct = (searchField) =>
+  catchAsync(async (req, res, next) => {
+    const { searchKey } = req.body;
 
-  const items = await features.query;
+    const features = new APIFeatures(
+      Product.find({
+        [searchField]: new RegExp(searchKey, "i"),
+        vendorId: req.user.id,
+      }),
+      req.query
+    )
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
 
-  return res.json({
-    status: "success",
-    results: items.length,
-    items,
+    const items = await features.query;
+
+    return res.json({
+      status: "success",
+      results: items.length,
+      items,
+    });
   });
-});
 
 exports.createVendorProduct = catchAsync(async (req, res, next) => {
   req.body.vendorId = req.user.id;
