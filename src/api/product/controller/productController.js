@@ -148,6 +148,27 @@ exports.getMultipleProducts = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.searchVendorProduct =(searchField) => catchAsync(async (req, res, next) => {
+  const { searchKey } = req.body;
+  
+  const features = new APIFeatures(
+    Product.find({ [searchField]: new RegExp(searchKey, "i"), vendorId : req.user.id }),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const items = await features.query;
+
+  return res.json({
+    status: "success",
+    results: items.length,
+    items,
+  });
+});
+
 exports.createVendorProduct = catchAsync(async (req, res, next) => {
   req.body.vendorId = req.user.id;
 
