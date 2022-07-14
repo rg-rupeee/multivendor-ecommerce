@@ -1,6 +1,6 @@
-const Order = require("../../../../models/Order");
-const User = require("../../../../models/User");
-const catchAsync = require("../../../../utils/catchAsync");
+const Order = require("../../../../../models/Order");
+const User = require("../../../../../models/User");
+const catchAsync = require("../../../../../utils/catchAsync");
 
 exports.earningsYearlyStats = catchAsync(async function(req,res,next){
 
