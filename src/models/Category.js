@@ -14,6 +14,10 @@ const categorySchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "Category",
   },
+  slug: {
+    type: String,
+    unique: true
+  },
 });
 
 const Category = mongoose.model("Category", categorySchema);
