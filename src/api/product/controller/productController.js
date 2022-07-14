@@ -4,6 +4,7 @@ const Product = require("../../../models/Product");
 const AppError = require("../../../utils/appError");
 const catchAsync = require("../../../utils/catchAsync");
 const APIFeatures = require("../../_util/apiFeatures");
+const Category = require("../../../models/Category");
 
 const getWishlistandCartProductDataForUser = async (req, Products) => {
   let products = Products;
@@ -61,6 +62,39 @@ exports.getProductsByCategory = catchAsync(async (req, res, next) => {
 
   const Features = new APIFeatures(
     Product.find({ category: categoryId }),
+    req.query
+  ).filter();
+  let totalResults = await Features.query.countDocuments();
+
+  products = await getWishlistandCartProductDataForUser(req, products);
+
+  return res.json({
+    status: "success",
+    results: products.length,
+    page: page ? page : 1,
+    totalResults,
+    products,
+  });
+});
+
+exports.getProductsByCategorySlug = catchAsync(async (req, res, next) => {
+  const { slug } = req.params;
+  const { page } = req.query;
+
+  console.log(slug);
+
+  const category = await Category.findOne({ slug });
+
+  const features = new APIFeatures(Product.find({ category }), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  let products = await features.query;
+
+  const Features = new APIFeatures(
+    Product.find({ category }),
     req.query
   ).filter();
   let totalResults = await Features.query.countDocuments();
