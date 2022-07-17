@@ -1,5 +1,6 @@
 const Order = require("../../../../../models/Order");
 const User = require("../../../../../models/User");
+const VendorOrder = require("../../../../../models/VendorOrder");
 const catchAsync = require("../../../../../utils/catchAsync");
 
 exports.earningsYearlyStats = catchAsync(async function(req,res,next){
@@ -31,7 +32,7 @@ exports.earningsYearlyStats = catchAsync(async function(req,res,next){
       }
     ];
 
-      const totalEarnings = await Order.aggregate(pipeline);
+      const totalEarnings = await VendorOrder.aggregate(pipeline);
 
       res.json({
         status : "success",
@@ -78,7 +79,7 @@ exports.earningsMonthlyStats = catchAsync(async function(req,res,next){
       }
     ];
 
-      const totalEarnings = await Order.aggregate(pipeline);
+      const totalEarnings = await VendorOrder.aggregate(pipeline);
 
       res.json({
         status : "success",
@@ -115,7 +116,7 @@ exports.earningsDailyStats = catchAsync(async function(req,res,next){
             '$dayOfMonth': '$createdAt'
           }, 
           'totalEarnings': {
-            '$sum': '$totalt'
+            '$sum': '$total'
           }
         }
       }, {
@@ -127,7 +128,7 @@ exports.earningsDailyStats = catchAsync(async function(req,res,next){
       }
     ];
     
-      const totalEarnings = await Order.aggregate(pipeline);
+      const totalEarnings = await VendorOrder.aggregate(pipeline);
 
       res.json({
         status : "success",

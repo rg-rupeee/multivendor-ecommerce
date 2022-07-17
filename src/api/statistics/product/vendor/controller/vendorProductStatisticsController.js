@@ -24,7 +24,7 @@ exports.vendorProductMonthlyStats = catchAsync(async function(req,res) {
           }
         }, {
           '$match': {
-            'tempVendorId': req.user.id
+            'tempVendorId': String(req.user.id)
           }
         }, {
           '$match': {
@@ -41,7 +41,7 @@ exports.vendorProductMonthlyStats = catchAsync(async function(req,res) {
         }, {
           '$group': {
             '_id': {
-              '$month': '$productOrderedAt.createdAt'
+              '$month': '$createdAt'
             }, 
             'totalProductSold': {
               '$count': {}
@@ -141,7 +141,7 @@ exports.vendorProductDailyStats = catchAsync(async function(req,res) {
           }
         }, {
           '$match': {
-            'tempVendorId': req.user.id
+            'tempVendorId': String(req.user.id)
           }
         }, {
           '$match': {

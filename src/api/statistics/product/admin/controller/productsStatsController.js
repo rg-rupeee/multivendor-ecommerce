@@ -139,8 +139,8 @@ exports.productDailyStats = catchAsync(async function(req,res) {
       }, {
         '$match': {
           'createdAt': {
-            '$gte': new Date('Sun, 01 May 2022 00:00:00 GMT'), 
-            '$lt': new Date('Wed, 01 Jun 2022 00:00:00 GMT')
+            '$gte': new Date(startDate), 
+            '$lt': new Date(endDate)
           }
         }
       }, {
