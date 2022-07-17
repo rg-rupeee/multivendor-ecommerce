@@ -1,56 +1,58 @@
 const mongoose = require("mongoose");
 const VendorOrder = require("./VendorOrder");
 
-const OrderSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  vendorOrders: [
-    {
+const OrderSchema = new mongoose.Schema(
+  {
+    userId: {
       type: mongoose.Types.ObjectId,
-      ref: "VendorOrder",
+      ref: "User",
       required: true,
     },
-  ],
-  vendorOrdersTotal: {
-    type: Number,
-    default: 0,
-    required: true,
+    vendorOrders: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "VendorOrder",
+        required: true,
+      },
+    ],
+    vendorOrdersTotal: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    coupon: {
+      type: mongoose.Types.ObjectId,
+      ref: "Coupon",
+    },
+    couponCode: {
+      type: String,
+    },
+    couponDiscount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    finalAmount: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    paymentStage: {
+      type: String,
+      enum: ["Done", "Initiated", "Cancelled", "Not Started"],
+      default: "Not Started",
+      required: true,
+    },
+    orderStatus: {
+      type: String,
+      enum: ["Placed", "Completed", "Initiated"],
+      default: "Initiated",
+      required: true,
+    },
+    razorpayOrderId: String,
   },
-  coupon: {
-    type: mongoose.Types.ObjectId,
-    ref: "Coupon",
-  },
-  couponCode: {
-    type: String,
-  },
-  couponDiscount: {
-    type: Number,
-    default: 0,
-    min: 0,
-  },
-  finalAmount: {
-    type: Number,
-    default: 0,
-    required: true,
-  },
-  paymentStage: {
-    type: String,
-    enum: ["Done", "Initiated", "Cancelled", "Not Started"],
-    default: "Not Started",
-    required: true,
-  },
-  orderStatus: {
-    type: String,
-    enum: ["Placed", "Completed", "Initiated"],
-    default: "Initiated",
-    required: true,
-  },
-  razorpayOrderId: String
-},
-{timestamps : true});
+  { timestamps: true }
+);
 
 OrderSchema.pre("save", async function (next) {
   let total = 0;
