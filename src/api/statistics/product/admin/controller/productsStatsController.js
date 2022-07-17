@@ -10,79 +10,52 @@ exports.productMonthlyStats = catchAsync(async function(req,res) {
     console.log(endDate)
 
     const pipeline = [
-        {
-          '$unwind': {
-            'path': '$vendorOrders', 
-            'preserveNullAndEmptyArrays': true
+      {
+        '$unwind': {
+          'path': '$vendorOrders', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$match': {
+          'createdAt': {
+            '$gte': new Date('Sat, 01 Jan 2022 00:00:00 GMT'), 
+            '$lt': new Date('Sun, 01 Jan 2023 00:00:00 GMT')
           }
-        }, {
-          '$match': {
-            'orderStatus': 'Placed'
+        }
+      }, {
+        '$lookup': {
+          'from': 'vendororders', 
+          'localField': 'vendorOrders', 
+          'foreignField': '_id', 
+          'as': 'vendorOrders'
+        }
+      }, {
+        '$unwind': {
+          'path': '$vendorOrders', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$unwind': {
+          'path': '$vendorOrders.products', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$group': {
+          '_id': {
+            '$month': '$createdAt'
+          }, 
+          'totalProductsSold': {
+            '$count': {}
           }
-        }, {
-          '$lookup': {
-            'from': 'vendororders', 
-            'localField': 'vendorOrders', 
-            'foreignField': '_id', 
-            'as': 'vendorOrders'
-          }
-        }, {
-          '$match': {
-            'createdAt': {
-              '$gte': new Date(startDate), 
-              '$lt': new Date(endDate)
-            }
-          }
-        }, {
-          '$unwind': {
-            'path': '$vendorOrders', 
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$unwind': {
-            'path': '$vendorOrders.products', 
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$group': {
-            '_id': '$vendorOrders.products.productId', 
-            'productOrderedAt': {
-              '$push': {
-                'createdAt': '$createdAt'
-              }
-            }, 
-            'totalsale': {
-              '$count': {}
-            }
-          }
-        }, {
-          '$unwind': {
-            'path': '$productOrderedAt', 
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-            '$group': {
-              '_id': {
-                '$dateToString': {
-                  'format': '%m', 
-                  'date': '$productOrderedAt.createdAt'
-                }
-              }, 
-              'productsIds': {
-                '$addToSet': {
-                  'productId': '$_id', 
-                  'totalsale': '$totalsale'
-                }
-              }
-            }
-          }, {
-            '$project': {
-              'productsIds': 1, 
-              'Month': '$_id', 
-              '_id': 0
-            }
-          }
-      ];
+        }
+      }, {
+        '$project': {
+          '_id': 0, 
+          'month': '$_id', 
+          'totalProductsSold': 1
+        }
+      }
+    ];
 
     productsSoldPerMonth = await Order.aggregate(pipeline);
 
@@ -97,72 +70,45 @@ exports.productMonthlyStats = catchAsync(async function(req,res) {
 exports.productYearlyStats = catchAsync(async function(req,res) {
     
     const pipeline = [
-        {
-          '$unwind': {
-            'path': '$vendorOrders', 
-            'preserveNullAndEmptyArrays': true
+      {
+        '$unwind': {
+          'path': '$vendorOrders', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$lookup': {
+          'from': 'vendororders', 
+          'localField': 'vendorOrders', 
+          'foreignField': '_id', 
+          'as': 'vendorOrders'
+        }
+      }, {
+        '$unwind': {
+          'path': '$vendorOrders', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$unwind': {
+          'path': '$vendorOrders.products', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$group': {
+          '_id': {
+            '$year': '$createdAt'
+          }, 
+          'totalProductsSold': {
+            '$count': {}
           }
-        },{
-          '$match': {
-            'orderStatus': 'Placed'
-          }
-        }, {
-          '$lookup': {
-            'from': 'vendororders', 
-            'localField': 'vendorOrders', 
-            'foreignField': '_id', 
-            'as': 'vendorOrders'
-          }
-        }, {
-          '$unwind': {
-            'path': '$vendorOrders', 
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$unwind': {
-            'path': '$vendorOrders.products', 
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$group': {
-            '_id': '$vendorOrders.products.productId', 
-            'productOrderedAt': {
-              '$push': {
-                'createdAt': '$createdAt'
-              }
-            }, 
-            'totalsale': {
-              '$count': {}
-            }
-          }
-        }, {
-          '$unwind': {
-            'path': '$productOrderedAt', 
-            'preserveNullAndEmptyArrays': true
-          }
-        },  {
-            '$group': {
-              '_id': {
-                '$dateToString': {
-                  'format': '%Y', 
-                  'date': '$productOrderedAt.createdAt'
-                }
-              }, 
-              'productsIds': {
-                '$addToSet': {
-                  'productId': '$_id', 
-                  'totalsale': '$totalsale'
-                }
-              }
-            }
-          }, {
-            '$project': {
-              'productsIds': 1, 
-              'Year': '$_id', 
-              '_id': 0
-            }
-          }
-      ];
+        }
+      }, {
+        '$project': {
+          '_id': 0, 
+          'year': '$_id', 
+          'totalProductsSold': 1
+        }
+      }
+    ];
 
     productsSoldPerYear = await Order.aggregate(pipeline);
 
@@ -185,79 +131,52 @@ exports.productDailyStats = catchAsync(async function(req,res) {
     console.log(endDate)
 
     const pipeline = [
-        {
-          '$unwind': {
-            'path': '$vendorOrders', 
-            'preserveNullAndEmptyArrays': true
+      {
+        '$unwind': {
+          'path': '$vendorOrders', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$match': {
+          'createdAt': {
+            '$gte': new Date('Sun, 01 May 2022 00:00:00 GMT'), 
+            '$lt': new Date('Wed, 01 Jun 2022 00:00:00 GMT')
           }
-        }, {
-          '$match': {
-            'orderStatus': 'Placed'
+        }
+      }, {
+        '$lookup': {
+          'from': 'vendororders', 
+          'localField': 'vendorOrders', 
+          'foreignField': '_id', 
+          'as': 'vendorOrders'
+        }
+      }, {
+        '$unwind': {
+          'path': '$vendorOrders', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$unwind': {
+          'path': '$vendorOrders.products', 
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$group': {
+          '_id': {
+            '$dayOfMonth': '$createdAt'
+          }, 
+          'totalProductsSold': {
+            '$count': {}
           }
-        }, {
-          '$lookup': {
-            'from': 'vendororders', 
-            'localField': 'vendorOrders', 
-            'foreignField': '_id', 
-            'as': 'vendorOrders'
-          }
-        }, {
-          '$match': {
-            'createdAt': {
-              '$gte': new Date(startDate), 
-              '$lt': new Date(endDate)
-            }
-          }
-        }, {
-          '$unwind': {
-            'path': '$vendorOrders', 
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$unwind': {
-            'path': '$vendorOrders.products', 
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$group': {
-            '_id': '$vendorOrders.products.productId', 
-            'productOrderedAt': {
-              '$push': {
-                'createdAt': '$createdAt'
-              }
-            }, 
-            'totalsale': {
-              '$count': {}
-            }
-          }
-        }, {
-          '$unwind': {
-            'path': '$productOrderedAt', 
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-            '$group': {
-              '_id': {
-                '$dateToString': {
-                  'format': '%d', 
-                  'date': '$productOrderedAt.createdAt'
-                }
-              }, 
-              'productsIds': {
-                '$addToSet': {
-                  'productId': '$_id', 
-                  'totalsale': '$totalsale'
-                }
-              }
-            }
-          }, {
-            '$project': {
-              'productsIds': 1, 
-              'Day': '$_id', 
-              '_id': 0
-            }
-          }
-      ];
+        }
+      }, {
+        '$project': {
+          '_id': 0, 
+          'dayOfTheMonth': '$_id', 
+          'totalProductsSold': 1
+        }
+      }
+    ];
 
     productsSoldPerDay = await Order.aggregate(pipeline);
 
