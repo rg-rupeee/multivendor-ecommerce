@@ -29,8 +29,11 @@ exports.sendMail = async (to, subject, htmlContent) => {
     });
 
     console.log(response.data);
+
+    return response;
   } catch (err) {
     console.log(err);
+    throw err;
   }
 };
 
