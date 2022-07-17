@@ -23,7 +23,7 @@ exports.createOrgUser = catchAsync(async (req, res, next) => {
 
   const neworgUser = new OrgUser(req.body);
 
-  neworgUser.save();
+  await neworgUser.save();
 
   return res.status(200).json({
     success: true,

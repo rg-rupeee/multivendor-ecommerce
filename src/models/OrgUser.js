@@ -13,11 +13,22 @@ const orgUserSchema = new mongoose.Schema({
     required: true,
     validate: [validator.isEmail, "Please provide a valid email"],
   },
-  role : {
-    type : [String],
-    enum : ["Vendor","User","Product","Blog","Admin","Newsletter","Payout","Order","Coupon","Category",""],
-    default : ["Vendor"],
-    required : true
+  role: {
+    type: [String],
+    enum: [
+      "Vendor",
+      "User",
+      "Product",
+      "Blog",
+      "Admin",
+      "Newsletter",
+      "Payout",
+      "Order",
+      "Coupon",
+      "Category",
+    ],
+    default: ["Vendor"],
+    required: true,
   },
   profile: {
     type: String,
