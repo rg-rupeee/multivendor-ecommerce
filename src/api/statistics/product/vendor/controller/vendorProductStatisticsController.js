@@ -1,3 +1,4 @@
+const VendorOrder = require("../../../../../models/VendorOrder");
 const Order = require("../../../../../models/VendorOrder");
 const catchAsync = require("../../../../../utils/catchAsync");
 
@@ -55,7 +56,7 @@ exports.vendorProductMonthlyStats = catchAsync(async function(req,res) {
         }
       ];
 
-    productsSoldPerMonth = await Order.aggregate(pipeline);
+    productsSoldPerMonth = await VendorOrder.aggregate(pipeline);
 
     console.log("result is ",productsSoldPerMonth)
 
@@ -106,7 +107,7 @@ exports.vendorProductYearlyStats = catchAsync(async function(req,res) {
         }
     ];
 
-    productsSoldPerYear = await Order.aggregate(pipeline);
+    productsSoldPerYear = await VendorOrder.aggregate(pipeline);
 
     console.log("result is ",productsSoldPerYear)
 
@@ -172,7 +173,7 @@ exports.vendorProductDailyStats = catchAsync(async function(req,res) {
         }
       ];
 
-    productsSoldPerDay = await Order.aggregate(pipeline);
+    productsSoldPerDay = await VendorOrder.aggregate(pipeline);
 
     console.log("result is ",productsSoldPerDay)
 

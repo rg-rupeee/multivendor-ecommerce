@@ -47,4 +47,7 @@ router.use("/upload", uploadRoutes);
 const paymentRoutes = require("./payment/index");
 router.use("/payment", paymentRoutes);
 
+const miscRoutes = require("./misc/index");
+router.use("/misc", miscRoutes);
+
 module.exports = router;
