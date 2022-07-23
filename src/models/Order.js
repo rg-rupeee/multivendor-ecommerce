@@ -50,6 +50,14 @@ const OrderSchema = new mongoose.Schema(
       required: true,
     },
     razorpayOrderId: String,
+    address: {
+      type: String,
+      required: true,
+    },
+    mobile: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
