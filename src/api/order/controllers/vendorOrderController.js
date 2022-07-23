@@ -25,7 +25,9 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 exports.getOrder = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
 
-  const vendorOrder = await VendorOrder.findById({ _id: orderId });
+  const vendorOrder = await VendorOrder.findById({ _id: orderId }).populate(
+    "products.productId", "name _id mrp retailPrice"
+  );
 
   if (!vendorOrder) {
     return next(new AppError("No vendor order found with that id", 404));
@@ -35,9 +37,20 @@ exports.getOrder = catchAsync(async (req, res, next) => {
     return next(new AppError("Forbidden! can access on the user's order", 403));
   }
 
+  const order = await Order.findOne({ vendorOrder: vendorOrder._id }).populate(
+    "userId"
+  );
+
   return res.json({
     success: true,
     order: vendorOrder,
+    userDetails: {
+      name: order?.userId?.name,
+      _id: order?.userId?._id,
+      email: order?.userId?.email,
+      address: order.address,
+      userPhone: order.mobile,
+    },
   });
 });
 
