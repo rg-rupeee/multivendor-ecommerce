@@ -3,6 +3,9 @@ const VendorOrder = require("../../../models/VendorOrder");
 const catchAsync = require("../../../utils/catchAsync");
 const APIFeatures = require("../../_util/apiFeatures");
 const AppError = require("../../../utils/appError");
+const User = require("../../../models/User");
+const { sendMail } = require("../../../utils/email");
+const { partnerMapping } = require("../../../utils/deliveryPartnerMapping");
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(
@@ -26,7 +29,8 @@ exports.getOrder = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
 
   const vendorOrder = await VendorOrder.findById({ _id: orderId }).populate(
-    "products.productId", "name _id mrp retailPrice"
+    "products.productId",
+    "name _id mrp retailPrice"
   );
 
   if (!vendorOrder) {
@@ -56,8 +60,11 @@ exports.getOrder = catchAsync(async (req, res, next) => {
 
 exports.updateOrderStatus = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
+  const { orderStatus, trackingId, partner } = req.body;
 
-  const vendorOrder = await VendorOrder.findById({ _id: orderId });
+  const vendorOrder = await VendorOrder.findById({ _id: orderId }).populate(
+    "userId"
+  );
 
   if (!vendorOrder) {
     return next(new AppError("No vendor order found with that id", 404));
@@ -67,19 +74,40 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
     return next(new AppError("Forbidden! can access on the user's order", 403));
   }
 
+  if (!(trackingId ^ partner)) {
+    return next(
+      new AppError("TrackingId and partner both needs to be provided")
+    );
+  }
+
   const updatedVendorOrder = await VendorOrder.findOneAndUpdate(
     {
       _id: vendorOrder._id,
     },
-    { orderStatus: req.body.orderStatus },
+    { orderStatus, trackingId, partner },
     {
       new: true,
       runValidators: true,
     }
   );
 
-  return res.json({
+  res.json({
     success: true,
     order: updatedVendorOrder,
   });
+
+  if (trackingId && partner) {
+    // send user mail and otp regarding same
+
+    const email = vendorOrder.userId.email;
+    const name = vendorOrder.userId.name;
+
+    // console.log({ email, name });
+
+    await sendMail(
+      { email, name },
+      "ORDER Dispatched",
+      `Your order with order id ${this._id} has been dispatched using ${partner}. You can track your order on the following link ${partnerMapping[partner]}. Your order tracking reference number is ${trackingId}`
+    );
+  }
 });
