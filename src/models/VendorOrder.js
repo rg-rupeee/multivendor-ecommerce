@@ -44,6 +44,8 @@ const vendorOrderSchema = new mongoose.Schema(
       default: "Placed",
       required: true,
     },
+    partner: String,
+    trackingId: String,
   },
   {
     timestamps: true,
@@ -61,7 +63,6 @@ vendorOrderSchema.pre("save", function (next) {
 });
 
 vendorOrderSchema.post("save", async function () {
-  // TODO: send mail to each vendor regarding the order
   console.log(this);
 
   const vendor = await Vendor.findOne({ _id: this.vendorId });
@@ -73,6 +74,10 @@ vendorOrderSchema.post("save", async function () {
     "ORDER RECEIVED",
     `You have an order with order id ${this._id}! please check dashboard.`
   );
+});
+
+vendorOrderSchema.post("save", async function () {
+  // TODO: check if
 });
 
 const VendorOrder = mongoose.model("VendorOrder", vendorOrderSchema);

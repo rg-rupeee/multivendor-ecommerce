@@ -31,10 +31,13 @@ router.post(
 );
 
 // search orders
-router.post("/search",
+router.post(
+  "/search",
   protect(OrgUser),
   restrictTo("Admin"),
-  requiredFields("searchKey"),factory.search(Order,"_id"));
+  requiredFields("searchKey"),
+  factory.search(Order, "_id")
+);
 
 // get vendor's all orders
 router.get("/vendor", protect(Vendor), venddorOrderController.getMyOrders);
@@ -55,7 +58,11 @@ router.patch(
 );
 
 // search vendor orders
-router.post("/vendor/search",requiredFields("searchKey"),factory.search(VendorOrder,"_id"));
+router.post(
+  "/vendor/search",
+  requiredFields("searchKey"),
+  factory.search(VendorOrder, "_id")
+);
 
 // get all orders
 router.get("/admin", protect(OrgUser), factory.getAll(Order, "order"));
