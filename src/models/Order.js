@@ -53,10 +53,12 @@ const OrderSchema = new mongoose.Schema(
     address: {
       type: String,
       required: false,
+      default: "NA"
     },
     mobile: {
       type: Number,
       required: false,
+      default: "NA"
     },
   },
   { timestamps: true }
