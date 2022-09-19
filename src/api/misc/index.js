@@ -4,7 +4,7 @@ const catchAsync = require("../../utils/catchAsync");
 const { requiredFields } = require("../_util/check");
 const { sendMail } = require("../../utils/email");
 
-router.get(
+router.post(
   "/sendContactMessage",
   requiredFields("body"),
   catchAsync(async (req, res, next) => {
