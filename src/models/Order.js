@@ -58,7 +58,7 @@ const OrderSchema = new mongoose.Schema(
     mobile: {
       type: Number,
       required: false,
-      default: "NA"
+      default: 0
     },
   },
   { timestamps: true }
