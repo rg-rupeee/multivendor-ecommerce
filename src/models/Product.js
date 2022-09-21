@@ -46,6 +46,7 @@ const productSchema = new mongoose.Schema(
       {
         type: String,
         required: true,
+        trim: true,
       },
     ],
     images: [{ type: String, required: true }],
@@ -70,7 +71,7 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Category",
     },
-    keyword: [String],
+    keyword: [{ type: String, trim: true }],
     relatedProducts: [
       {
         type: mongoose.Types.ObjectId,
