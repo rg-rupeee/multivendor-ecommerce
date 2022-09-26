@@ -18,13 +18,19 @@ router.use("/review", reviewRouter);
 
 router.get("/", optionalProtect(User), productController.getAllProducts);
 
+router.post("/count", productController.getCount);
+
 router.post(
   "/multiple",
   requiredFields("products"),
   productController.getMultipleProducts
 );
 
-router.post("/search", requiredFields("searchKey"), factory.search(Product,'name'));
+router.post(
+  "/search",
+  requiredFields("searchKey"),
+  factory.search(Product, "name")
+);
 
 router.post(
   "/vendor/search",

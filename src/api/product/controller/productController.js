@@ -260,3 +260,13 @@ exports.getProductsByVendor = catchAsync(async (req, res, next) => {
     products,
   });
 });
+
+exports.getCount = catchAsync(async (req, res, next) => {
+  const query = req.body;
+  const count = await Product.find(query).countDocuments();
+
+  return res.json({
+    status: "success",
+    count,
+  });
+});
