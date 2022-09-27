@@ -103,6 +103,9 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// productSchema.index({ name: 1 }, { sparse: true });
+// productSchema.index({ keyword: 1 }, { sparse: true });
+
 const Product = mongoose.model("Product", productSchema);
 
 module.exports = Product;

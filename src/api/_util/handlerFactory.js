@@ -43,7 +43,7 @@ exports.updateOne = (Model, entity) =>
   });
 
 exports.createOne = (Model, entity) =>
-  catchAsync(async (req, res, next) => {
+  catchAsync(async (req, res, _next) => {
     if (!entity) {
       entity = "document";
     }
@@ -80,7 +80,7 @@ exports.getOne = (Model, entity, popOptions) =>
   });
 
 exports.getAll = (Model, entity) =>
-  catchAsync(async (req, res, next) => {
+  catchAsync(async (req, res, _next) => {
     if (!entity) {
       entity = "document";
     }
@@ -102,7 +102,7 @@ exports.getAll = (Model, entity) =>
   });
 
 exports.getAllwithQuery = (Model, query, entity) =>
-  catchAsync(async (req, res, next) => {
+  catchAsync(async (req, res, _next) => {
     if (!entity) {
       entity = "document";
     }
@@ -123,30 +123,31 @@ exports.getAllwithQuery = (Model, query, entity) =>
     res.status(200).json(response);
   });
 
-  exports.search =(Model,searchField) => catchAsync(async (req, res, next) => {
+exports.search = (Model, searchField) =>
+  catchAsync(async (req, res, _next) => {
     const { searchKey } = req.body;
-  
-    if(searchField === "_id"){
+
+    if (searchField === "_id") {
       const items = await Model.aggregate([
         {
           $addFields: {
-            tempUserId: { $toString: '$_id' },
-          }
+            tempUserId: { $toString: "$_id" },
+          },
         },
         {
           $match: {
-            tempUserId: { $regex: searchKey, $options: "i" }
-          }
-        }
+            tempUserId: { $regex: searchKey, $options: "i" },
+          },
+        },
       ]).exec();
-    
+
       return res.json({
         status: "success",
         results: items.length,
         items,
       });
     }
-    
+
     const features = new APIFeatures(
       Model.find({ [searchField]: new RegExp(searchKey, "i") }),
       req.query
@@ -155,13 +156,42 @@ exports.getAllwithQuery = (Model, query, entity) =>
       .sort()
       .limitFields()
       .paginate();
-  
+
     const items = await features.query;
-  
+
     return res.json({
       status: "success",
       results: items.length,
       items,
     });
   });
-  
+
+/* search field should not be _id */
+exports.searchMultipleKeys = (Model, searchFields) =>
+  catchAsync(async (req, res, _next) => {
+    const { searchKey } = req.body;
+
+    let query = [];
+
+    for (const field of searchFields) {
+      let obj = {};
+      obj[field] = new RegExp(searchKey, "i");
+      query.push(obj);
+    }
+
+    console.log(query);
+
+    const features = new APIFeatures(Model.find({ $or: query }), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const items = await features.query;
+
+    return res.json({
+      status: "success",
+      results: items.length,
+      items,
+    });
+  });

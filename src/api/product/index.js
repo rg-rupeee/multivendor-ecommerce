@@ -29,7 +29,7 @@ router.post(
 router.post(
   "/search",
   requiredFields("searchKey"),
-  factory.search(Product, "name")
+  factory.searchMultipleKeys(Product, ["name", "keyword"])
 );
 
 router.post(
