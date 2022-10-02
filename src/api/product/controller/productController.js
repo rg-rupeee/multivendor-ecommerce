@@ -1,3 +1,5 @@
+const contextService = require("request-context");
+
 const Cart = require("../../../models/Cart");
 const Wishlist = require("../../../models/Wishlist");
 const Product = require("../../../models/Product");
@@ -240,6 +242,8 @@ exports.createVendorProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.getProductsByVendor = catchAsync(async (req, res, next) => {
+  contextService.set("request:countUnpublished", true);
+
   const { page } = req.query;
 
   const features = new APIFeatures(

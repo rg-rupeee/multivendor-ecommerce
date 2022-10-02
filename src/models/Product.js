@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const contextService = require("request-context");
 
 const productSchema = new mongoose.Schema(
   {
@@ -99,9 +100,27 @@ const productSchema = new mongoose.Schema(
       default: false,
       enum: [false],
     },
+    isPublished: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
+
+productSchema.pre("find", function (next) {
+  if (!contextService.get("request:countUnpublished")) {
+    this.find({ isPublished: { $ne: false } });
+  }
+  next();
+});
+
+productSchema.pre(/^count/, function (next) {
+  if (!contextService.get("request:countUnpublished")) {
+    this.find({ isPublished: { $ne: false } });
+  }
+  next();
+});
 
 const Product = mongoose.model("Product", productSchema);
 

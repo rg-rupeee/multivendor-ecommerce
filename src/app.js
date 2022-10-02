@@ -6,6 +6,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const cors = require("cors");
+const contextService = require("request-context");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./utils/errorController");
@@ -45,6 +46,9 @@ app.use(xss());
 
 // Prevent parameter pollution
 app.use(hpp());
+
+// wrap requests in the 'request' namespace
+app.use(contextService.middleware("request"));
 
 // ROUTES
 app.use("/api", apiRouter);
