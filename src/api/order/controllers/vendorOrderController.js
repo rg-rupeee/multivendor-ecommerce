@@ -109,5 +109,7 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
       "ORDER Dispatched",
       `Your order with order id ${this._id} has been dispatched using ${partner}. You can track your order on the following link ${partnerMapping[partner]}. Your order tracking reference number is ${trackingId}`
     );
+
+    // TODO: send sms
   }
 });

@@ -74,6 +74,9 @@ vendorOrderSchema.post("save", async function () {
     "ORDER RECEIVED",
     `You have an order with order id ${this._id}! please check dashboard.`
   );
+
+  // TODO: send sms
+
 });
 
 vendorOrderSchema.post("save", async function () {
