@@ -46,6 +46,16 @@ const vendorOrderSchema = new mongoose.Schema(
     },
     partner: String,
     trackingId: String,
+    address: {
+      type: String,
+      required: false,
+      default: "NA"
+    },
+    mobile: {
+      type: Number,
+      required: false,
+      default: 0
+    },
   },
   {
     timestamps: true,
@@ -63,7 +73,7 @@ vendorOrderSchema.pre("save", function (next) {
 });
 
 vendorOrderSchema.post("save", async function () {
-  console.log(this);
+  // console.log(this);
 
   const vendor = await Vendor.findOne({ _id: this.vendorId });
 

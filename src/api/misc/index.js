@@ -9,7 +9,7 @@ router.post(
   requiredFields("body"),
   catchAsync(async (req, res, next) => {
     const { body } = req.body;
-    console.log(body);
+    // console.log(body);
 
     const data = String(body);
 

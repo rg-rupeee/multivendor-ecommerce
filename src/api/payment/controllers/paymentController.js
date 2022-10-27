@@ -68,7 +68,7 @@ exports.paymentCapturedWebhook = catchAsync(async (req, res, next) => {
       }
     );
 
-    console.log(updatedOrder);
+    // console.log(updatedOrder);
   } else {
     // pass it
     console.log(

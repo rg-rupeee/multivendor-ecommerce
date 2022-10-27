@@ -28,7 +28,7 @@ exports.sendMail = async (to, subject, htmlContent) => {
       },
     });
 
-    console.log(response.data);
+    // console.log(response.data);
 
     return response;
   } catch (err) {
@@ -58,7 +58,7 @@ exports.sendMailViaTemplate = async (to, templateId) => {
       },
     });
 
-    console.log(response.data);
+    // console.log(response.data);
   } catch (err) {
     console.log(err);
   }

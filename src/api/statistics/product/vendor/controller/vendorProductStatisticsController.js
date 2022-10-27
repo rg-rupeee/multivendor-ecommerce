@@ -7,8 +7,8 @@ exports.vendorProductMonthlyStats = catchAsync(async function(req,res) {
     let startDate = "01 Jan " + year + " 00:00:00 GMT";
     let endDate = "01 Jan " + (year+1) + " 00:00:00 GMT";
 
-    console.log(startDate)
-    console.log(endDate)
+    // console.log(startDate)
+    // console.log(endDate)
 
     const pipeline = [
       {
@@ -58,7 +58,7 @@ exports.vendorProductMonthlyStats = catchAsync(async function(req,res) {
 
     productsSoldPerMonth = await VendorOrder.aggregate(pipeline);
 
-    console.log("result is ",productsSoldPerMonth)
+    // console.log("result is ",productsSoldPerMonth)
 
     res.json({
         status : "success",
@@ -109,7 +109,7 @@ exports.vendorProductYearlyStats = catchAsync(async function(req,res) {
 
     productsSoldPerYear = await VendorOrder.aggregate(pipeline);
 
-    console.log("result is ",productsSoldPerYear)
+    // console.log("result is ",productsSoldPerYear)
 
     res.json({
         status : "success",
@@ -124,8 +124,8 @@ exports.vendorProductDailyStats = catchAsync(async function(req,res) {
     let startDate = year+"-"+month+"-1 00:00:00 GMT";
     let endDate = year+"-"+(month+1)+"-1 00:00:00 GMT";
 
-    console.log(startDate)
-    console.log(endDate)
+    // console.log(startDate)
+    // console.log(endDate)
 
     const pipeline = [
       {
@@ -175,7 +175,7 @@ exports.vendorProductDailyStats = catchAsync(async function(req,res) {
 
     productsSoldPerDay = await VendorOrder.aggregate(pipeline);
 
-    console.log("result is ",productsSoldPerDay)
+    // console.log("result is ",productsSoldPerDay)
 
     res.json({
         status : "success",
