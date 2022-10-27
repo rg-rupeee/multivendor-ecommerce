@@ -98,6 +98,31 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updateUserContactDetails = catchAsync(async (req, res, next) => {
+  const { orderId } = req.params;
+
+  const { address, mobile } = req.body;
+
+  const order = await Order.findOneAndUpdate(
+    { _id: orderId },
+    { address, mobile },
+    { new: true, runValidators: true }
+  );
+
+  for (const vorderId of order.vendorOrders) {
+    await VendorOrder.findOneAndUpdate(
+      { _id: vorderId },
+      { address, mobile },
+      { new: true, runValidators: true }
+    );
+  }
+
+  return res.json({
+    success: true,
+    order,
+  });
+});
+
 exports.getOrder = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
 
