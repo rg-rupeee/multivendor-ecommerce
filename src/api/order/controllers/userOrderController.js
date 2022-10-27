@@ -64,7 +64,7 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
       color: product.color,
     });
 
-    console.log(vendors[vendorId]);
+    // console.log(vendors[vendorId]);
   }
 
   // validate vendor and create vendor order
@@ -82,7 +82,7 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
     vendorOrders.push(vendorOrder._id);
     vendorOrderDetails.push(vendorOrder);
 
-    console.log(vendorOrder);
+    // console.log(vendorOrder);
   }
 
   // create user order on basis of vendor order

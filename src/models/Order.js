@@ -66,8 +66,8 @@ const OrderSchema = new mongoose.Schema(
 
 OrderSchema.pre("save", async function (next) {
   let total = 0;
-  console.log("...");
-  console.log(this);
+  // console.log("...");
+  // console.log(this);
 
   for (const order of this.vendorOrders) {
     const vendorOrder = await VendorOrder.findOne({ _id: order });

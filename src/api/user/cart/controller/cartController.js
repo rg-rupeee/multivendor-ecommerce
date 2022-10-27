@@ -175,7 +175,7 @@ exports.updateProductQuantityInCart = catchAsync(async (req, res, next) => {
     return next(new AppError(`Quantity cannot be a negetive product`, 400));
   }
 
-  console.log({ productId, quantity });
+  // console.log({ productId, quantity });
 
   const product = await Product.findOne({ _id: productId });
   if (!product) {
