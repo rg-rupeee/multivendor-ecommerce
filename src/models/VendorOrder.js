@@ -46,16 +46,6 @@ const vendorOrderSchema = new mongoose.Schema(
     },
     partner: String,
     trackingId: String,
-    address: {
-      type: String,
-      required: false,
-      default: "NA"
-    },
-    mobile: {
-      type: Number,
-      required: false,
-      default: 0
-    },
   },
   {
     timestamps: true,

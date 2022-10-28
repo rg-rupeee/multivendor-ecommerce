@@ -109,14 +109,6 @@ exports.updateUserContactDetails = catchAsync(async (req, res, next) => {
     { new: true, runValidators: true }
   );
 
-  for (const vorderId of order.vendorOrders) {
-    await VendorOrder.findOneAndUpdate(
-      { _id: vorderId },
-      { address, mobile },
-      { new: true, runValidators: true }
-    );
-  }
-
   return res.json({
     success: true,
     order,
