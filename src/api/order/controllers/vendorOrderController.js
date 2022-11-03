@@ -74,7 +74,7 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
     return next(new AppError("Forbidden! can access on the user's order", 403));
   }
 
-  if (!(trackingId ^ partner)) {
+  if ((trackingId && !partner) || (partner && !trackingId)) {
     return next(
       new AppError("TrackingId and partner both needs to be provided")
     );
