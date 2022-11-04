@@ -104,6 +104,9 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    colorMapping: {
+      type: mongoose.Schema.Types.Mixed,
+    },
   },
   { timestamps: true }
 );
