@@ -5,6 +5,7 @@ const APIFeatures = require("../../_util/apiFeatures");
 const AppError = require("../../../utils/appError");
 const User = require("../../../models/User");
 const { sendMail } = require("../../../utils/email");
+const { sendMessage } = require("../../../utils/sms");
 const { partnerMapping } = require("../../../utils/deliveryPartnerMapping");
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
@@ -109,6 +110,12 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
       `Your order with order id ${this._id} has been dispatched using ${partner}. You can track your order on the following link ${partnerMapping[partner]}. Your order tracking reference number is ${trackingId}`
     );
 
+    const order = await Order.findOne({ vendorOrders: updatedVendorOrder._id });
+
     // send sms to user for order status update
+    await sendMessage(
+      order.mobile,
+      `Your order with order id ${this._id} has been dispatched using ${partner}. You can track your order on the following link ${partnerMapping[partner]}. Your order tracking reference number is ${trackingId}`
+    );
   }
 });
