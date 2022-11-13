@@ -102,12 +102,13 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
     const email = vendorOrder.userId.email;
     const name = vendorOrder.userId.name;
 
-    // console.log({ email, name });
-
+    // send mail to user for order status update
     await sendMail(
       { email, name },
       "ORDER Dispatched",
       `Your order with order id ${this._id} has been dispatched using ${partner}. You can track your order on the following link ${partnerMapping[partner]}. Your order tracking reference number is ${trackingId}`
     );
+
+    // send sms to user for order status update
   }
 });

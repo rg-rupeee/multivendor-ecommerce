@@ -53,7 +53,7 @@ exports.paymentCapturedWebhook = catchAsync(async (req, res, next) => {
   if (digest == req.headers["x-razorpay-signature"]) {
     console.log("request is legit");
     // process it
-    const updatedOrder = await Order.findOneAndUpdate(
+    await Order.findOneAndUpdate(
       {
         razorpayOrderId: req.body.payload.payment.entity.order_id,
       },
@@ -68,7 +68,14 @@ exports.paymentCapturedWebhook = catchAsync(async (req, res, next) => {
       }
     );
 
-    // console.log(updatedOrder);
+    // TODO: send email to vendor for order 
+
+    // TODO: send email to user for payment done 
+
+    // TODO: send email to user for order
+
+    // TODO: send sms to user for order
+
   } else {
     // pass it
     console.log(
