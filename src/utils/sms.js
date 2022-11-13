@@ -5,6 +5,10 @@ const client = require("twilio")(accountSid, authToken);
 const fromMobileNo = process.env.CONTACT_NO;
 
 exports.sendMessage = async (mobileNo, body) => {
+  if (typeof mobileNo !== "string") mobileNo = mobileNo.toString();
+
+  if (mobileNo.length == 10) mobileNo = "+91" + mobileNo;
+
   console.log({ mobileNo, body });
 
   client.messages
