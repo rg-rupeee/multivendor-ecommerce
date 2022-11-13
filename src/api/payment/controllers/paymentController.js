@@ -3,6 +3,11 @@ const catchAsync = require("../../../utils/catchAsync");
 const AppError = require("../../../utils/appError");
 const crypto = require("crypto");
 const razorpay = require("../../../config/razorpay");
+const { sendMessage } = require("../../../utils/sms");
+const { sendMail } = require("../../../utils/email");
+const VendorOrder = require("../../../models/VendorOrder");
+const Vendor = require("../../../models/Vendor");
+const User = require("../../../models/User");
 
 exports.intiateRazorpayPayment = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
@@ -38,6 +43,33 @@ exports.intiateRazorpayPayment = catchAsync(async (req, res, next) => {
   });
 });
 
+const sendUpdates = async (order) => {
+  const user = await User.findOne({ _id: order.userId });
+  // send email to user for payment done and order received
+  await sendMail(
+    { email: user.email, name: user.name },
+    "Payment done",
+    "Your payment was successfully captured. Thank you for shopping with us. Kindly visit the user profile to view all of your orders."
+  );
+
+  // send sms to user for order
+  await sendMessage(
+    order.billingMobile,
+    `Your order has been placed. Kindly visit the user profile to view all of your orders. Thank you`
+  );
+
+  for (const vo of order.vendorOrders) {
+    const vendorOrder = await VendorOrder.findOne({ _id: vo });
+    const vendor = await Vendor.findOne({ _id: vendorOrder.vendorId });
+    //  send email to vendor for order
+    await sendMail(
+      { email: vendor.email, name: vendor.name },
+      "Order received | You have new order",
+      "You have received an order please visit your dashboard to view order"
+    );
+  }
+};
+
 exports.paymentCapturedWebhook = catchAsync(async (req, res, next) => {
   console.log("Payment Captured");
   console.log(req.body.payload.payment);
@@ -53,7 +85,7 @@ exports.paymentCapturedWebhook = catchAsync(async (req, res, next) => {
   if (digest == req.headers["x-razorpay-signature"]) {
     console.log("request is legit");
     // process it
-    await Order.findOneAndUpdate(
+    const updatedOrder = await Order.findOneAndUpdate(
       {
         razorpayOrderId: req.body.payload.payment.entity.order_id,
       },
@@ -68,14 +100,7 @@ exports.paymentCapturedWebhook = catchAsync(async (req, res, next) => {
       }
     );
 
-    // TODO: send email to vendor for order 
-
-    // TODO: send email to user for payment done 
-
-    // TODO: send email to user for order
-
-    // TODO: send sms to user for order
-
+    sendUpdates(updatedOrder);
   } else {
     // pass it
     console.log(
