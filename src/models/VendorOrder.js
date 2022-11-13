@@ -76,9 +76,9 @@ vendorOrderSchema.post("save", async function () {
   );
 });
 
-vendorOrderSchema.post("save", async function () {
-  // TODO: check if
-});
+// vendorOrderSchema.post("save", async function () {
+//   // TODO: check if
+// });
 
 const VendorOrder = mongoose.model("VendorOrder", vendorOrderSchema);
 

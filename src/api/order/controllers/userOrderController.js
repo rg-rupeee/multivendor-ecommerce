@@ -101,11 +101,11 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
 exports.updateUserContactDetails = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
 
-  const { address, mobile } = req.body;
+  const { address, mobile, billingAddress, billingMobile } = req.body;
 
   const order = await Order.findOneAndUpdate(
     { _id: orderId },
-    { address, mobile },
+    { address, mobile, billingAddress, billingMobile },
     { new: true, runValidators: true }
   );
 
