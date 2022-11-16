@@ -123,30 +123,31 @@ exports.getAllwithQuery = (Model, query, entity) =>
     res.status(200).json(response);
   });
 
-  exports.search =(Model,searchField) => catchAsync(async (req, res, next) => {
+exports.search = (Model, searchField) =>
+  catchAsync(async (req, res, next) => {
     const { searchKey } = req.body;
-  
-    if(searchField === "_id"){
+
+    if (searchField === "_id") {
       const items = await Model.aggregate([
         {
           $addFields: {
-            tempUserId: { $toString: '$_id' },
-          }
+            tempUserId: { $toString: "$_id" },
+          },
         },
         {
           $match: {
-            tempUserId: { $regex: searchKey, $options: "i" }
-          }
-        }
+            tempUserId: { $regex: searchKey, $options: "i" },
+          },
+        },
       ]).exec();
-    
+
       return res.json({
         status: "success",
         results: items.length,
         items,
       });
     }
-    
+
     const features = new APIFeatures(
       Model.find({ [searchField]: new RegExp(searchKey, "i") }),
       req.query
@@ -155,13 +156,12 @@ exports.getAllwithQuery = (Model, query, entity) =>
       .sort()
       .limitFields()
       .paginate();
-  
+
     const items = await features.query;
-  
+
     return res.json({
       status: "success",
       results: items.length,
       items,
     });
   });
-  
