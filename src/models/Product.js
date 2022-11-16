@@ -40,7 +40,7 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     quantityInStock: {
-      type: String,
+      type: Number,
       required: true,
     },
     thumbnail: [
@@ -103,6 +103,9 @@ const productSchema = new mongoose.Schema(
     isPublished: {
       type: Boolean,
       default: true,
+    },
+    colorMapping: {
+      type: mongoose.Schema.Types.Mixed,
     },
   },
   { timestamps: true }

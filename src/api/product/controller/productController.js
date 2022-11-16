@@ -83,7 +83,7 @@ exports.getProductsByCategorySlug = catchAsync(async (req, res, next) => {
   const { slug } = req.params;
   const { page } = req.query;
 
-  console.log(slug);
+  // console.log(slug);
 
   const category = await Category.findOne({ slug });
 

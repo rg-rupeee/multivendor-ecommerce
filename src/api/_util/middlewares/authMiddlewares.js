@@ -25,8 +25,8 @@ exports.protect = (...models) => {
     for (var i = 0; i < models.length; i++) {
       let model = models[i];
       let currentUser = await model.findById(decoded.id);
-      console.log(currentUser);
-      console.log(currentUser != null);
+      // console.log(currentUser);
+      // console.log(currentUser != null);
       if (currentUser != null) {
         req.user = {
           id: currentUser._id,
@@ -67,8 +67,8 @@ exports.optionalProtect = (...models) => {
     for (var i = 0; i < models.length; i++) {
       let model = models[i];
       let currentUser = await model.findById(decoded.id);
-      console.log(currentUser);
-      console.log(currentUser != null);
+      // console.log(currentUser);
+      // console.log(currentUser != null);
       if (currentUser != null) {
         req.user = {
           id: currentUser._id,

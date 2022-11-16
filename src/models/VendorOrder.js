@@ -63,7 +63,7 @@ vendorOrderSchema.pre("save", function (next) {
 });
 
 vendorOrderSchema.post("save", async function () {
-  console.log(this);
+  // console.log(this);
 
   const vendor = await Vendor.findOne({ _id: this.vendorId });
 
@@ -79,9 +79,9 @@ vendorOrderSchema.post("save", async function () {
 
 });
 
-vendorOrderSchema.post("save", async function () {
-  // TODO: check if
-});
+// vendorOrderSchema.post("save", async function () {
+//   // TODO: check if
+// });
 
 const VendorOrder = mongoose.model("VendorOrder", vendorOrderSchema);
 

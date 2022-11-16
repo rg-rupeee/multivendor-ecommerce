@@ -58,7 +58,7 @@ exports.updateReview = catchAsync(async (req, res, next) => {
     return next(new AppError("No review found with that id", 404));
   }
 
-  console.log({ review, user: req.user });
+  // console.log({ review, user: req.user });
 
   if (!review.userId.equals(req.user.id)) {
     return next(
@@ -66,7 +66,7 @@ exports.updateReview = catchAsync(async (req, res, next) => {
     );
   }
 
-  console.log(req.body);
+  // console.log(req.body);
 
   const updated = await Review.findOneAndUpdate({ _id: reviewId }, req.body, {
     new: true,

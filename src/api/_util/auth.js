@@ -20,7 +20,7 @@ exports.emailSignin = (Model) =>
       return next(new AppError("User does not exists", 400));
     }
 
-    console.log({ user, password });
+    // console.log({ user
 
     if (!(await user.correctPassword(password, user.password))) {
       return next(new AppError("Invalid Password", 401));
@@ -91,7 +91,7 @@ exports.resetPassword = (Model) =>
 
     const user = await Model.findOne({ email });
 
-    console.log(user);
+    // console.log(user);
 
     if (!user) {
       return next(new AppError(`No user exists with email: ${email}`, 400));

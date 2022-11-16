@@ -19,6 +19,14 @@ router.get("/user", protect(User), userOrderController.getMyOrders);
 // create order
 router.post("/user", protect(User), userOrderController.createOrderFromCart);
 
+// update order - contact details
+router.patch(
+  "/:orderId/user-details",
+  protect(User),
+  requiredFields("address", "mobile"),
+  userOrderController.updateUserContactDetails
+);
+
 // get order
 router.get("/user/:orderId", protect(User), userOrderController.getOrder);
 

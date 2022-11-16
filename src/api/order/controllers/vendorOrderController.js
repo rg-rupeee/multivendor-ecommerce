@@ -5,6 +5,7 @@ const APIFeatures = require("../../_util/apiFeatures");
 const AppError = require("../../../utils/appError");
 const User = require("../../../models/User");
 const { sendMail } = require("../../../utils/email");
+const { sendMessage } = require("../../../utils/sms");
 const { partnerMapping } = require("../../../utils/deliveryPartnerMapping");
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
@@ -74,7 +75,7 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
     return next(new AppError("Forbidden! can access on the user's order", 403));
   }
 
-  if (!(trackingId ^ partner)) {
+  if ((trackingId && !partner) || (partner && !trackingId)) {
     return next(
       new AppError("TrackingId and partner both needs to be provided")
     );
@@ -102,14 +103,20 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
     const email = vendorOrder.userId.email;
     const name = vendorOrder.userId.name;
 
-    // console.log({ email, name });
-
+    // send mail to user for order status update
     await sendMail(
       { email, name },
       "ORDER Dispatched",
       `Your order with order id ${this._id} has been dispatched using ${partner}. You can track your order on the following link ${partnerMapping[partner]}. Your order tracking reference number is ${trackingId}`
     );
 
-    // TODO: send sms
+
+    const order = await Order.findOne({ vendorOrders: updatedVendorOrder._id });
+
+    // send sms to user for order status update
+    await sendMessage(
+      order.mobile,
+      `Your order with order id ${this._id} has been dispatched using ${partner}. You can track your order on the following link ${partnerMapping[partner]}. Your order tracking reference number is ${trackingId}`
+    );
   }
 });

@@ -64,7 +64,7 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
       color: product.color,
     });
 
-    console.log(vendors[vendorId]);
+    // console.log(vendors[vendorId]);
   }
 
   // validate vendor and create vendor order
@@ -82,7 +82,7 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
     vendorOrders.push(vendorOrder._id);
     vendorOrderDetails.push(vendorOrder);
 
-    console.log(vendorOrder);
+    // console.log(vendorOrder);
   }
 
   // create user order on basis of vendor order
@@ -95,6 +95,23 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
     success: true,
     order,
     vendorOrders: vendorOrderDetails,
+  });
+});
+
+exports.updateUserContactDetails = catchAsync(async (req, res, next) => {
+  const { orderId } = req.params;
+
+  const { address, mobile, billingAddress, billingMobile } = req.body;
+
+  const order = await Order.findOneAndUpdate(
+    { _id: orderId },
+    { address, mobile, billingAddress, billingMobile },
+    { new: true, runValidators: true }
+  );
+
+  return res.json({
+    success: true,
+    order,
   });
 });
 
