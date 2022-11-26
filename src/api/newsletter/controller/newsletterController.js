@@ -41,7 +41,7 @@ exports.subscribe = catchAsync(async (req, res, next) => {
 
   await sendMail(
     {
-      email: document.email,
+      email,
       name: "user",
     },
     subject,
