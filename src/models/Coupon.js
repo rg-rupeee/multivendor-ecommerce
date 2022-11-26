@@ -48,11 +48,17 @@ couponSchema.statics.calcualteDiscount = function (coupon, orderAmount) {
       } else {
         discount = couponDiscountByPerc;
       }
+    } else {
+      discount = couponDiscountByPerc;
     }
   } else if (coupon.discountAmount) {
     discount = coupon.discountAmount;
   } else {
     discount = 0;
+  }
+
+  if (discount > orderAmount) {
+    discount = orderAmount;
   }
 
   if (discount > coupon.maxDiscount) {
