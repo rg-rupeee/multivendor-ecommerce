@@ -10,7 +10,10 @@ const { partnerMapping } = require("../../../utils/deliveryPartnerMapping");
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(
-    VendorOrder.find({ vendorId: req.user.id }),
+    VendorOrder.find({
+      vendorId: req.user.id,
+      orderStatus: { $ne: "Initiated" },
+    }),
     req.query
   )
     .filter()
@@ -109,7 +112,6 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
       "ORDER Dispatched",
       `Your order with order id ${this._id} has been dispatched using ${partner}. You can track your order on the following link ${partnerMapping[partner]}. Your order tracking reference number is ${trackingId}`
     );
-
 
     const order = await Order.findOne({ vendorOrders: updatedVendorOrder._id });
 
