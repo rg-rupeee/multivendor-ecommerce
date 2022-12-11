@@ -20,7 +20,10 @@ const _getCart = async (userId) => {
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(
-    Order.find({ userId: req.user.id }).populate("vendorOrders"),
+    Order.find({
+      userId: req.user.id,
+      orderStatus: { $ne: "Initiated" },
+    }).populate("vendorOrders"),
     req.query
   )
     .filter()
