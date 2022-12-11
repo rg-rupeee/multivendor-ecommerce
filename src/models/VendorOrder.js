@@ -40,8 +40,8 @@ const vendorOrderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ["Placed", "Completed", "Transistioning"],
-      default: "Placed",
+      enum: ["Initiated", "Placed", "Completed", "Transistioning"],
+      default: "Initiated",
       required: true,
     },
     partner: String,
@@ -76,7 +76,6 @@ vendorOrderSchema.post("save", async function () {
   );
 
   // TODO: send sms
-
 });
 
 // vendorOrderSchema.post("save", async function () {

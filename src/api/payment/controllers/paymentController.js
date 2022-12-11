@@ -59,7 +59,11 @@ const sendUpdates = async (order) => {
   );
 
   for (const vo of order.vendorOrders) {
-    const vendorOrder = await VendorOrder.findOne({ _id: vo });
+    const vendorOrder = await VendorOrder.findOneAndUpdate(
+      { _id: vo },
+      { orderStatus: "Placed" },
+      { new: true, runValidators: true }
+    );
     const vendor = await Vendor.findOne({ _id: vendorOrder.vendorId });
     //  send email to vendor for order
     await sendMail(
