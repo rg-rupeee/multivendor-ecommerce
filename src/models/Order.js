@@ -56,7 +56,7 @@ const OrderSchema = new mongoose.Schema(
       default: "NA"
     },
     mobile: {
-      type: Number,
+      type: String,
       required: false,
       default: 0
     },
@@ -66,7 +66,7 @@ const OrderSchema = new mongoose.Schema(
       default: "NA"
     },
     billingMobile: {
-      type: Number,
+      type: String,
       required: false,
       default: 0
     },
