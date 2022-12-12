@@ -28,12 +28,9 @@ exports.sendMail = async (to, subject, htmlContent) => {
       },
     });
 
-    // console.log(response.data);
-
     return response;
   } catch (err) {
     console.log(err);
-    throw err;
   }
 };
 
@@ -57,8 +54,6 @@ exports.sendMailViaTemplate = async (to, templateId) => {
         "api-key": process.env.SENDINBLUE_API_KEY,
       },
     });
-
-    // console.log(response.data);
   } catch (err) {
     console.log(err);
   }
