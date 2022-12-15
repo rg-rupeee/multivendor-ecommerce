@@ -18,6 +18,10 @@ const _getCart = async (userId) => {
   return cart;
 };
 
+const clearCart = async (userId) => {
+  await Cart.findOneAndUpdate({ userId }, { $set: { products: [] } });
+};
+
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(
     Order.find({
@@ -93,6 +97,9 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
     userId: req.user.id,
     vendorOrders,
   });
+
+  // empty cart
+  clearCart(req.user.id);
 
   return res.json({
     success: true,
