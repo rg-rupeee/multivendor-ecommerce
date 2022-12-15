@@ -19,7 +19,7 @@ const _getCart = async (userId) => {
 };
 
 const clearCart = async (userId) => {
-  await Cart.findOneAndUpdate({ userId }, { $set: { friends: [] } });
+  await Cart.findOneAndUpdate({ userId }, { $set: { products: [] } });
 };
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
