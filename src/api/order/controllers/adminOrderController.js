@@ -18,6 +18,7 @@ exports.getOrders = catchAsync(async (req, res, next) => {
 
   return res.json({
     success: true,
-    orders,
+    results: orders.length,
+    order: orders,
   });
 });
