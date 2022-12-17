@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Order = require("../../../models/Order");
 const VendorOrder = require("../../../models/VendorOrder");
 const catchAsync = require("../../../utils/catchAsync");
@@ -45,7 +46,7 @@ exports.getOrder = catchAsync(async (req, res, next) => {
     return next(new AppError("Forbidden! can access on the user's order", 403));
   }
 
-  const order = await Order.findOne({ vendorOrder: vendorOrder._id }).populate(
+  const order = await Order.findOne({ vendorOrders: orderId }).populate(
     "userId"
   );
 
