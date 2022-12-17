@@ -11,6 +11,7 @@ const { requiredFields } = require("../_util/check");
 
 const userOrderController = require("./controllers/userOrderController");
 const venddorOrderController = require("./controllers/vendorOrderController");
+const adminOrderController = require("./controllers/adminOrderController");
 const VendorOrder = require("../../models/VendorOrder");
 
 // get user's all orders
@@ -73,7 +74,7 @@ router.post(
 );
 
 // get all orders
-router.get("/admin", protect(OrgUser), factory.getAll(Order, "order"));
+router.get("/admin", protect(OrgUser), adminOrderController.getOrders);
 
 // get order
 router.get("/admin/:id", protect(OrgUser), factory.getOne(Order, "order"));
