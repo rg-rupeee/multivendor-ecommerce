@@ -30,7 +30,7 @@ exports.protect = (...models) => {
       if (currentUser != null) {
         req.user = {
           id: currentUser._id,
-          role : currentUser.role
+          role: currentUser.role,
         };
         return next();
       }
@@ -72,7 +72,7 @@ exports.optionalProtect = (...models) => {
       if (currentUser != null) {
         req.user = {
           id: currentUser._id,
-          role : currentUser.role
+          role: currentUser.role,
         };
         return next();
       }
@@ -82,11 +82,14 @@ exports.optionalProtect = (...models) => {
   });
 };
 
-exports.restrictTo = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return next(new AppError("Insufficient Permissions!!!! Forbidden.", 403));
-    }
-    next();
-  };
-};
+// exports.restrictTo = (...roles) => {
+//   return (req, res, next) => {
+//     console.log(req.user);
+//     console.log(roles);
+//     console.log(roles.includes(req.user.role));
+//     if (!roles.includes(req.user.role)) {
+//       return next(new AppError("Insufficient Permissions!!!! Forbidden.", 403));
+//     }
+//     next();
+//   };
+// };

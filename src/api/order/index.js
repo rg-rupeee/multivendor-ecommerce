@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { protect, restrictTo } = require("../_util/middlewares/authMiddlewares");
+const { protect } = require("../_util/middlewares/authMiddlewares");
 const OrgUser = require("../../models/OrgUser");
 const factory = require("../_util/handlerFactory");
 const Order = require("../../models/Order");
@@ -43,7 +43,6 @@ router.post(
 router.post(
   "/search",
   protect(OrgUser),
-  restrictTo("Admin"),
   requiredFields("searchKey"),
   factory.search(Order, "_id")
 );
