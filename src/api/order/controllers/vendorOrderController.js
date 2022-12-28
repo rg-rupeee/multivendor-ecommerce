@@ -57,8 +57,8 @@ exports.getOrder = catchAsync(async (req, res, next) => {
       name: order?.userId?.name,
       _id: order?.userId?._id,
       email: order?.userId?.email,
-      address: order.address,
-      userPhone: order.mobile,
+      address: order?.address,
+      userPhone: order?.mobile,
     },
   });
 });
