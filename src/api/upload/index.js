@@ -9,23 +9,23 @@ const OrgUser = require("../../models/OrgUser");
 const User = require("../../models/User");
 
 router.use(
-	fileUpload({
-		useTempFiles: true,
-	})
+  fileUpload({
+    useTempFiles: true,
+  })
 );
 
 // for single image upload
 router.post(
-    "/image",
-    protect(Vendor,OrgUser,User),
-    uploadController.uploadImage
-    );
+  "/image",
+  protect(Vendor, OrgUser, User),
+  uploadController.uploadImage
+);
 
 // for multiple images upload
 router.post(
-    "/images",
-    protect(Vendor,OrgUser,User),
-    uploadController.uploadImages
-    );
+  "/images",
+  protect(Vendor, OrgUser, User),
+  uploadController.uploadImages
+);
 
 module.exports = router;

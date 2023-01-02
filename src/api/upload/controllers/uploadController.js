@@ -3,44 +3,53 @@ const catchAsync = require("../../../utils/catchAsync");
 const AppError = require("../../../utils/appError");
 
 exports.uploadImage = catchAsync(async (req, res, next) => {
-	if (!req.files) {
-		return next(new AppError("Please upload File", 400));
-	}
-	if (!req.body.path) {
-		return next(new AppError("Please provide file path", 400));
-	}
-	// console.log(req.files);
-	const file = req.files.image;
+  if (!req.files) {
+    return next(new AppError("Please upload File", 400));
+  }
+  if (!req.body.path) {
+    return next(new AppError("Please provide file path", 400));
+  }
+  // console.log(req.files);
+  const file = req?.files?.image;
 
-	const result = await cloudinary.uploader.upload(file.tempFilePath, {
-		folder: req.body.path,
-	});
+  let result;
+  try {
+    result = await cloudinary.uploader.upload(file.tempFilePath, {
+      folder: req?.body?.path,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.json({
+      success: false,
+      error: err,
+    });
+  }
 
-	return res.json({
-		succes: true,
-		result,
-	});
+  return res.json({
+    succes: true,
+    result,
+  });
 });
 
 exports.uploadImages = catchAsync(async (req, res, next) => {
-	if (!req.files) {
-		return next(new AppError("Please upload File", 400));
-	}
-	if (!req.body.path) {
-		return next(new AppError("Please provide file path", 400));
-	}
-	const files = req.files.images;
+  if (!req.files) {
+    return next(new AppError("Please upload File", 400));
+  }
+  if (!req.body.path) {
+    return next(new AppError("Please provide file path", 400));
+  }
+  const files = req.files.images;
 
-	const result = [];
-	for (const file of files) {
-		const res = await cloudinary.uploader.upload(file.tempFilePath, {
-			folder: req.body.path,
-		});
-		result.push(res);
-	}
+  const result = [];
+  for (const file of files) {
+    const res = await cloudinary.uploader.upload(file.tempFilePath, {
+      folder: req.body.path,
+    });
+    result.push(res);
+  }
 
-	return res.json({
-		succes: true,
-		result,
-	});
+  return res.json({
+    succes: true,
+    result,
+  });
 });
