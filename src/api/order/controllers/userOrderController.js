@@ -18,7 +18,7 @@ const _getCart = async (userId) => {
   return cart;
 };
 
-const clearCart = async (userId) => {
+exports.clearCart = async (userId) => {
   await Cart.findOneAndUpdate({ userId }, { $set: { products: [] } });
 };
 
@@ -99,7 +99,7 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
   });
 
   // empty cart
-  clearCart(req.user.id);
+  // clearCart(req.user.id);
 
   return res.json({
     success: true,
