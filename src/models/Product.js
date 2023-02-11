@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const contextService = require("request-context");
+const slugify = require("slugify");
 
 const productSchema = new mongoose.Schema(
   {
@@ -7,6 +8,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: true,
+    },
+    slug: {
+      type: String,
+      unique: true,
     },
     mrp: {
       type: Number,
@@ -110,6 +115,11 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+productSchema.pre("save", function (next) {
+  this.slug = slugify(this.name);
+  next();
+});
 
 productSchema.pre("find", function (next) {
   if (!contextService.get("request:countUnpublished")) {

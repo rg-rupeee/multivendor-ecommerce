@@ -47,6 +47,7 @@ router.get(
 );
 
 router.get("/:id", optionalProtect(User), productController.getOneProduct);
+router.get("/slug/:slug", optionalProtect(User), productController.getProductFromSlug);
 
 router.get("/category/:categoryId", productController.getProductsByCategory);
 
