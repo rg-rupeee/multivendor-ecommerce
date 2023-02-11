@@ -5,6 +5,7 @@ const categorySchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: true,
+    unique: true,
   },
   isPrimitive: {
     type: Boolean,
@@ -16,7 +17,7 @@ const categorySchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    unique: true
+    unique: true,
   },
 });
 

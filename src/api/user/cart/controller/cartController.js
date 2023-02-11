@@ -94,7 +94,8 @@ const _updateProductQuantityInCart = async (
     /* if product quantity is 0 remove item from cart */
     updatedCart = await _removeProductFromCart(cart, productId, userId);
   } else {
-    if (!cart.products.some((obj) => obj.productId.equals(productId))) {
+    const found = cart.products.some((obj) => obj.productId.equals(productId));
+    if (!found) {
       if (isCustom) {
         updatedCart = await Cart.findOneAndUpdate(
           { userId },
@@ -125,6 +126,16 @@ const _updateProductQuantityInCart = async (
         );
       }
     } else {
+      if (found.color != color) {
+        updatedCart = await Cart.findOneAndUpdate(
+          { userId },
+          { $push: { products: { productId, quantity, color } } },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+      }
       updatedCart = await Cart.findOneAndUpdate(
         { userId, "products.productId": productId },
         { $set: { "products.$.quantity": quantity } },

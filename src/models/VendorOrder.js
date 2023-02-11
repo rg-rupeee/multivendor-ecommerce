@@ -69,11 +69,11 @@ vendorOrderSchema.post("save", async function () {
 
   if (!vendor) return;
 
-  await sendMail(
-    { email: vendor.email, name: vendor.name },
-    "ORDER RECEIVED",
-    `You have an order with order id ${this._id}! please check dashboard.`
-  );
+  // await sendMail(
+  //   { email: vendor.email, name: vendor.name },
+  //   "ORDER RECEIVED",
+  //   `You have an order with order id ${this._id}! please check dashboard.`
+  // );
 
   // TODO: send sms
 });

@@ -8,6 +8,7 @@ const { sendMail } = require("../../../utils/email");
 const VendorOrder = require("../../../models/VendorOrder");
 const Vendor = require("../../../models/Vendor");
 const User = require("../../../models/User");
+const { clearCart } = require("../../order/controllers/userOrderController");
 
 exports.intiateRazorpayPayment = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
@@ -104,6 +105,7 @@ exports.paymentCapturedWebhook = catchAsync(async (req, res, next) => {
       }
     );
 
+    clearCart(updatedOrder.userId);
     sendUpdates(updatedOrder);
   } else {
     // pass it
