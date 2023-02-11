@@ -13,6 +13,7 @@ router.get("/all/:id", protect(OrgUser), factory.getOne(User));
 
 router.post(
   "/search",
+  protect(OrgUser),
   requiredFields("searchKey"),
   factory.search(User, "email")
 );
