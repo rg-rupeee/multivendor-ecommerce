@@ -32,6 +32,11 @@ const OrderSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+    shippingCharges: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
     finalAmount: {
       type: Number,
       default: 0,
@@ -53,22 +58,22 @@ const OrderSchema = new mongoose.Schema(
     address: {
       type: String,
       required: false,
-      default: "NA"
+      default: "NA",
     },
     mobile: {
       type: String,
       required: false,
-      default: 0
+      default: 0,
     },
     billingAddress: {
       type: String,
       required: false,
-      default: "NA"
+      default: "NA",
     },
     billingMobile: {
       type: String,
       required: false,
-      default: 0
+      default: 0,
     },
   },
   { timestamps: true }
@@ -93,6 +98,8 @@ OrderSchema.pre("save", async function (next) {
     this.vendorOrdersTotal > this.couponDiscount
       ? this.vendorOrdersTotal - this.couponDiscount
       : 0;
+
+  this.finalAmount += shippingCharges;
 
   next();
 });

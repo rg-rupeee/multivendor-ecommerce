@@ -6,6 +6,7 @@ const catchAsync = require("../../../utils/catchAsync");
 const AppError = require("../../../utils/appError");
 const APIFeatures = require("../../_util/apiFeatures");
 const { ValidateCart } = require("../../user/cart/controller/cartController");
+const { mapState } = require("../../../utils/statesShippingChargesMapping");
 
 const _getCart = async (userId) => {
   await ValidateCart(userId);
@@ -16,6 +17,30 @@ const _getCart = async (userId) => {
   );
 
   return cart;
+};
+
+const calculateShippingCharges = async (order, state) => {
+  let totalWeight = 0;
+  for (const vo of order) {
+    const o = await VendorOrder.findOne({ _id: vo }).populate("products");
+    for (const pdt of o.products) {
+      const td = pdt.tableData.find((obj) => {
+        return obj.key === "weight";
+      });
+      totalWeight += td
+        ? parseInt(td.value) * parseInt(pdt.quantity)
+        : 1 * parseInt(pdt.quantity);
+    }
+  }
+
+  state = state.toLowerCase();
+  if (!mapState[state]) {
+    state = "other";
+  }
+
+  return totalWeight > 2
+    ? mapState[state][2] + (totalWeight - 2) * 80
+    : mapState[state][2];
 };
 
 exports.clearCart = async (userId) => {
@@ -111,13 +136,23 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
 exports.updateUserContactDetails = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
 
-  const { address, mobile, billingAddress, billingMobile } = req.body;
+  const { address, mobile, billingAddress, billingMobile, state } = req.body;
 
-  const order = await Order.findOneAndUpdate(
-    { _id: orderId },
-    { address, mobile, billingAddress, billingMobile },
-    { new: true, runValidators: true }
-  );
+  // calculate shippingCharges based on state also update final amount
+
+  const order = await Order.findOne({ _id: orderId });
+  const shippingCharges = calculateShippingCharges(_order, state);
+
+  /*
+   * Not providing finalAmount so that it will be automatically calculated in pre save hook
+   */
+  order.address = address;
+  order.mobile = mobile;
+  order.billingAddress = billingAddress;
+  order.billingMobile = billingMobile;
+  order.shippingCharges = shippingCharges;
+
+  await order.save();
 
   return res.json({
     success: true,
