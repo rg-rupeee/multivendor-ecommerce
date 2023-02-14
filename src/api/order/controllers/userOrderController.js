@@ -19,17 +19,19 @@ const _getCart = async (userId) => {
   return cart;
 };
 
-const calculateShippingCharges = async (order, state) => {
+const calculateShippingCharges = async (order, state="") => {
+  // console.log(order);
   let totalWeight = 0;
-  for (const vo of order) {
-    const o = await VendorOrder.findOne({ _id: vo }).populate("products");
+  for (const vo of order.vendorOrders) {
+    const o = await VendorOrder.findOne({ _id: vo }).populate("products.productId");
     for (const pdt of o.products) {
-      const td = pdt.tableData.find((obj) => {
+      const p = pdt.productId;
+      const td = p.tableData?.find((obj) => {
         return obj.key === "weight";
       });
       totalWeight += td
-        ? parseInt(td.value) * parseInt(pdt.quantity)
-        : 1 * parseInt(pdt.quantity);
+        ? parseInt(td.value) * parseInt(p.quantity)
+        : 1 * parseInt(p.quantity);
     }
   }
 
@@ -141,7 +143,7 @@ exports.updateUserContactDetails = catchAsync(async (req, res, next) => {
   // calculate shippingCharges based on state also update final amount
 
   const order = await Order.findOne({ _id: orderId });
-  const shippingCharges = calculateShippingCharges(order, state);
+  const shippingCharges = await calculateShippingCharges(order, state);
 
   /*
    * Not providing finalAmount so that it will be automatically calculated in pre save hook
