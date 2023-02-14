@@ -141,7 +141,7 @@ exports.updateUserContactDetails = catchAsync(async (req, res, next) => {
   // calculate shippingCharges based on state also update final amount
 
   const order = await Order.findOne({ _id: orderId });
-  const shippingCharges = calculateShippingCharges(_order, state);
+  const shippingCharges = calculateShippingCharges(order, state);
 
   /*
    * Not providing finalAmount so that it will be automatically calculated in pre save hook
