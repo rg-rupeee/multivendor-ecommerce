@@ -99,7 +99,7 @@ OrderSchema.pre("save", async function (next) {
       ? this.vendorOrdersTotal - this.couponDiscount
       : 0;
 
-  this.finalAmount += shippingCharges;
+  this.finalAmount += this.shippingCharges;
 
   next();
 });
