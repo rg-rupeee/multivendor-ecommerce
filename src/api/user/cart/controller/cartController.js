@@ -99,8 +99,17 @@ const _updateProductQuantityInCart = async (
     /* if product quantity is 0 remove item from cart */
     updatedCart = await _removeProductFromCart(cart, productId, userId);
   } else {
-    const found = cart.products.some((obj) => obj.productId.equals(productId));
-    if (!found || found.color != color) {
+    const found = cart.products.find((obj) => {
+      if (!color) return obj.productId.equals(productId);
+
+      if (obj.productId.equals(productId)) {
+        return obj.color == color;
+      }
+
+      return false;
+    });
+    // console.log({ color, found });
+    if (!found) {
       updatedCart = await Cart.findOneAndUpdate(
         { userId },
         {
@@ -120,9 +129,31 @@ const _updateProductQuantityInCart = async (
         }
       );
     } else {
+      let cartProducts = cart.products;
+      const cart_products = [];
+      if (color) {
+        let flag = true;
+        for (let cp of cartProducts) {
+          if (flag && cp.productId.equals(productId) && cp.color == color) {
+            cp.quantity = cp.quantity + 1;
+            flag = false;
+          }
+          cart_products.push(cp);
+        }
+      } else {
+        let flag = true;
+        for (let cp of cartProducts) {
+          if (flag && cp.productId.equals(productId)) {
+            cp.quantity = cp.quantity + 1;
+            flag = false;
+          }
+          cart_products.push(cp);
+        }
+      }
+
       updatedCart = await Cart.findOneAndUpdate(
-        { userId, "products.productId": productId },
-        { $set: { "products.$.quantity": quantity } },
+        { userId },
+        { $set: { products: cart_products } },
         {
           new: true,
           runValidators: true,
