@@ -1,4 +1,3 @@
-
 exports.mapState = {
   tamilnadu: {
     0.5: 60,
@@ -36,6 +35,11 @@ exports.mapState = {
     2: 220,
   },
   u: {
+    0.5: 100,
+    1: 180,
+    2: 220,
+  },
+  delhi: {
     0.5: 100,
     1: 180,
     2: 220,
