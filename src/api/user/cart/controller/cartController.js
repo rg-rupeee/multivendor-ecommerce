@@ -108,7 +108,7 @@ const _updateProductQuantityInCart = async (
 
       return false;
     });
-    console.log({ color, found });
+    // console.log({ color, found });
     if (!found) {
       updatedCart = await Cart.findOneAndUpdate(
         { userId },
