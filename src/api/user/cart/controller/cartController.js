@@ -88,54 +88,38 @@ const _updateProductQuantityInCart = async (
   req
 ) => {
   let updatedCart;
-  const { isCustom, customDescription, color } = req.body;
+  const { customDescription, color } = req.body;
+
+  let isCustom = false;
+  if (customDescription) {
+    isCustom = true;
+  }
 
   if (quantity == 0) {
     /* if product quantity is 0 remove item from cart */
     updatedCart = await _removeProductFromCart(cart, productId, userId);
   } else {
     const found = cart.products.some((obj) => obj.productId.equals(productId));
-    if (!found) {
-      if (isCustom) {
-        updatedCart = await Cart.findOneAndUpdate(
-          { userId },
-          {
-            $push: {
-              products: {
-                productId,
-                quantity,
-                isCustom,
-                customDescription,
-                color,
-              },
+    if (!found || found.color != color) {
+      updatedCart = await Cart.findOneAndUpdate(
+        { userId },
+        {
+          $push: {
+            products: {
+              productId,
+              quantity,
+              isCustom,
+              customDescription,
+              color,
             },
           },
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-      } else {
-        updatedCart = await Cart.findOneAndUpdate(
-          { userId },
-          { $push: { products: { productId, quantity, color } } },
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-      }
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
     } else {
-      if (found.color != color) {
-        updatedCart = await Cart.findOneAndUpdate(
-          { userId },
-          { $push: { products: { productId, quantity, color } } },
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-      }
       updatedCart = await Cart.findOneAndUpdate(
         { userId, "products.productId": productId },
         { $set: { "products.$.quantity": quantity } },
