@@ -19,19 +19,22 @@ const _getCart = async (userId) => {
   return cart;
 };
 
-const calculateShippingCharges = async (order, state="") => {
-  // console.log(order);
+const calculateShippingCharges = async (order, state = "") => {
   let totalWeight = 0;
   for (const vo of order.vendorOrders) {
-    const o = await VendorOrder.findOne({ _id: vo }).populate("products.productId");
+    const o = await VendorOrder.findOne({ _id: vo }).populate(
+      "products.productId"
+    );
     for (const pdt of o.products) {
       const p = pdt.productId;
+
       const td = p.tableData?.find((obj) => {
         return obj.key === "Weight";
       });
+
       totalWeight += td
-        ? parseInt(td.value) * parseInt(p.quantity)
-        : 1 * parseInt(p.quantity);
+        ? parseInt(td.value) * parseInt(pdt.quantity)
+        : 1 * parseInt(pdt.quantity);
     }
   }
 
@@ -42,7 +45,7 @@ const calculateShippingCharges = async (order, state="") => {
 
   return totalWeight > 2
     ? mapState[state][2] + (totalWeight - 2) * 80
-    : mapState[state][2];
+    : mapState[state][totalWeight];
 };
 
 exports.clearCart = async (userId) => {
@@ -97,8 +100,6 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
       customDescription: product.customDescription,
       color: product.color,
     });
-
-    // console.log(vendors[vendorId]);
   }
 
   // validate vendor and create vendor order
@@ -106,7 +107,6 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
   const vendorOrders = [];
   const vendorOrderDetails = [];
   for (const id of vendorIds) {
-    // console.log(vendors[id]);
     const vendorOrder = await VendorOrder.create({
       userId: req.user.id,
       vendorId: id,
@@ -115,8 +115,6 @@ exports.createOrderFromCart = catchAsync(async (req, res, next) => {
 
     vendorOrders.push(vendorOrder._id);
     vendorOrderDetails.push(vendorOrder);
-
-    // console.log(vendorOrder);
   }
 
   // create user order on basis of vendor order
