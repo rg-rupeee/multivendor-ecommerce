@@ -27,7 +27,7 @@ const calculateShippingCharges = async (order, state="") => {
     for (const pdt of o.products) {
       const p = pdt.productId;
       const td = p.tableData?.find((obj) => {
-        return obj.key === "weight";
+        return obj.key === "Weight";
       });
       totalWeight += td
         ? parseInt(td.value) * parseInt(p.quantity)
