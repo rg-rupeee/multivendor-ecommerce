@@ -5,7 +5,7 @@ exports.mapState = {
     1: 80,
     2: 140,
   },
-  kerela: {
+  kerala: {
     0.5: 80,
     1: 100,
     2: 160,
