@@ -20,7 +20,15 @@ const _getCart = async (userId) => {
 };
 
 const calculateShippingCharges = async (order, state = "") => {
-  let totalWeight = 0;
+  let weight;
+  let quantity;
+  let cost = 0;
+
+  state = state.toLowerCase();
+  if (!mapState[state]) {
+    state = "other";
+  }
+
   for (const vo of order.vendorOrders) {
     const o = await VendorOrder.findOne({ _id: vo }).populate(
       "products.productId"
@@ -32,20 +40,21 @@ const calculateShippingCharges = async (order, state = "") => {
         return obj.key === "Weight";
       });
 
-      totalWeight += td
-        ? parseInt(td.value) * parseInt(pdt.quantity)
-        : 1 * parseInt(pdt.quantity);
+      console.log(td);
+
+      weight = parseFloat(td.value);
+      quantity = parseInt(pdt.quantity);
+
+      console.log(weight);
+      console.log(quantity);
+
+      cost +=
+        weight * weight > 2
+          ? (mapState[state][2] + (weight - 2) * 80) * quantity
+          : mapState[state][weight] * quantity;
     }
   }
-
-  state = state.toLowerCase();
-  if (!mapState[state]) {
-    state = "other";
-  }
-
-  return totalWeight > 2
-    ? mapState[state][2] + (totalWeight - 2) * 80
-    : mapState[state][totalWeight];
+  return cost;
 };
 
 exports.clearCart = async (userId) => {
