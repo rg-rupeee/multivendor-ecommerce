@@ -87,6 +87,8 @@ const _updateProductQuantityInCart = async (
   userId,
   req
 ) => {
+  console.log({ cartpdts: cart.products, productId, quantity, userId });
+
   let updatedCart;
   const { customDescription, color } = req.body;
 
@@ -135,7 +137,7 @@ const _updateProductQuantityInCart = async (
         let flag = true;
         for (let cp of cartProducts) {
           if (flag && cp.productId.equals(productId) && cp.color == color) {
-            cp.quantity = cp.quantity + 1;
+            cp.quantity = quantity;
             flag = false;
           }
           cart_products.push(cp);
@@ -144,7 +146,7 @@ const _updateProductQuantityInCart = async (
         let flag = true;
         for (let cp of cartProducts) {
           if (flag && cp.productId.equals(productId)) {
-            cp.quantity = cp.quantity + 1;
+            cp.quantity = quantity;
             flag = false;
           }
           cart_products.push(cp);
