@@ -14,7 +14,7 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
     VendorOrder.find({
       vendorId: req.user.id,
       orderStatus: { $ne: "Initiated" },
-    }),
+    }).populate('userId'),
     req.query
   )
     .filter()
