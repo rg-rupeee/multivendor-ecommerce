@@ -6,7 +6,7 @@ exports.getOrders = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(
     Order.find({
       orderStatus: { $ne: "Initiated" },
-    }),
+    }).populate('userId'),
     req.query
   )
     .filter()
