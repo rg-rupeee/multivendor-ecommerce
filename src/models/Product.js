@@ -68,10 +68,12 @@ const productSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    category: {
-      type: mongoose.Types.ObjectId,
-      ref: "Category",
-    },
+    category: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Category",
+      },
+    ],
     keyword: [{ type: String, trim: true }],
     relatedProducts: [
       {
