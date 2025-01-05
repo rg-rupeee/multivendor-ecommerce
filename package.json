@@ -1,5 +1,5 @@
 {
-  "name": "varnudais-backend",
+  "name": "multivendor-ecommerce-application-backend",
   "version": "1.0.0",
   "description": "multivendor ecommerce platform ",
   "main": "server.js",
