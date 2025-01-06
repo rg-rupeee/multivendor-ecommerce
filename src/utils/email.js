@@ -6,8 +6,8 @@ exports.sendMail = async (to, subject, htmlContent) => {
   try {
     const data = {
       sender: {
-        name: "Varnudais",
-        email: "rupesh.varnudais@gmail.com",
+        name: "Multivendor Ecommerce",
+        email: process.env.FROM_EMAIL,
       },
       to: [
         {

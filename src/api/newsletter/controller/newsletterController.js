@@ -36,7 +36,7 @@ exports.subscribe = catchAsync(async (req, res, next) => {
     newsLetter = await NewsLetter.create({ email });
   }
 
-  const subject = "Varnudais | Subscribed to Newsletter!";
+  const subject = "Multivendor Ecommerce | Subscribed to Newsletter!";
   const htmlContent = "Thank you for signing up for the newsletter!";
 
   await sendMail(
